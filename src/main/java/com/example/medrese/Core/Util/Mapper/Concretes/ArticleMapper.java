@@ -30,7 +30,7 @@ public class ArticleMapper implements IArticleMapper {
 
     @Override
     public List<ArticleResponse> mapToArticleResponseList() {
-//erimnen hec yerde yoxdu <3 niye qipqirmizidi
+//erimnen hec yerde yoxdu <3 niye qipqirmizidi test
         // bu yazilish yanlishdi bilirsende yeqinmk yazd;g;d; okey
         return articleRepository.findAll().stream()
                 .map(article -> {
