@@ -2,7 +2,6 @@ package com.example.medrese.DTO.Request.Update;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.Set;
 
@@ -16,8 +15,6 @@ public class UpdateQuestion {
 
     String answer;
 
-    @ToStringExclude
-    @EqualsAndHashCode.Exclude
     Set<Integer> categories;
 
 }

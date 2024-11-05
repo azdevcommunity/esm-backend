@@ -1,6 +1,8 @@
 package com.example.medrese.Controller;
 
 
+import com.example.medrese.DTO.Request.Create.CreateBookDTO;
+import com.example.medrese.DTO.Response.BookResponse;
 import com.example.medrese.Model.Book;
 import com.example.medrese.Service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -23,24 +25,19 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable Integer id) {
-        Optional<Book> book = bookService.getBookById(id);
-        return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<BookResponse> getBookById(@PathVariable Integer id) {
+        return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
-        return bookService.createBook(book);
+    public ResponseEntity<BookResponse> createBook(@RequestBody CreateBookDTO createBookDTO) {
+        return ResponseEntity.ok(bookService.createBook(createBookDTO)) ;
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody Book bookDetails) {
-        try {
             Book updatedBook = bookService.updateBook(id, bookDetails);
             return ResponseEntity.ok(updatedBook);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @DeleteMapping("/{id}")

@@ -9,6 +9,6 @@ public interface BookRepository extends JpaRepository<Book,Integer> {
 
 //    @Modifying(clearAutomatically = true)
 //    @Transactional
-//    @Query("delete from Book b where b.author.id = ?1")
+//    @Query("delete from BookMapper b where b.author.id = ?1")
 //    void deleteByAuthorId(int authorId);
 }

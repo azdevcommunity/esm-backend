@@ -1,9 +1,12 @@
 package com.example.medrese.Controller;
 
+import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
+import com.example.medrese.DTO.Request.Update.UpdateArticle;
+import com.example.medrese.DTO.Response.ArticleResponse;
 import com.example.medrese.Model.Article;
+import com.example.medrese.Model.Author;
 import com.example.medrese.Service.ArticleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,8 +16,7 @@ import java.util.Optional;
 @RequestMapping("/api/articles")
 @RequiredArgsConstructor
 public class ArticleController {
-    @Autowired
-    private ArticleService articleService;
+    private final ArticleService articleService;
 
     @GetMapping
     public List<Article> getAllArticles() {
@@ -23,23 +25,21 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Article> getArticleById(@PathVariable Integer id) {
-        Optional<Article> article = articleService.getArticleById(id);
-        return article.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+         return ResponseEntity.ok(articleService.getArticleById(id)) ;
+
     }
 
+
+
     @PostMapping
-    public Article createArticle(@RequestBody Article article) {
-        return articleService.createArticle(article);
+    public ResponseEntity<ArticleResponse> createArticle(@RequestBody CreateArticleDTO article) {
+        return ResponseEntity.ok(articleService.createArticle(article));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable Integer id, @RequestBody Article articleDetails) {
-        try {
+    public ResponseEntity<Article> updateArticle(@PathVariable Integer id, @RequestBody UpdateArticle articleDetails) {
             Article updatedArticle = articleService.updateArticle(id, articleDetails);
             return ResponseEntity.ok(updatedArticle);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @DeleteMapping("/{id}")

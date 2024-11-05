@@ -1,6 +1,7 @@
 package com.example.medrese.Core.Util.Exceptions;
 
-import com.msys.esm.Core.Util.Exceptions.Global.NotFoundException;
+
+import com.example.medrese.Core.Util.Exceptions.Global.NotFoundException;
 
 public class StatisticNotFoundException extends NotFoundException {
     public StatisticNotFoundException(String message) {

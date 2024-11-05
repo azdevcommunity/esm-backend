@@ -1,4 +1,4 @@
-package com.example.medrese.Core.DTO.Request.Create;
+package com.example.medrese.DTO.Request.Create;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateStatistic {
+public class CreateStatisticDTO {
     @NotBlank(message = "View Count is required")
     String viewCount;
     @NotBlank(message = "Subscriber Count  is required")

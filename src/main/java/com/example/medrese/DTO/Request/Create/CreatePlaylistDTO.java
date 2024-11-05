@@ -1,4 +1,4 @@
-package com.example.medrese.Core.DTO.Request.Create;
+package com.example.medrese.DTO.Request.Create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreatePlaylist {
+public class CreatePlaylistDTO {
 
     @NotBlank(message = "PlaylistId is required")
     @Size(max = 40, message = "PlaylistId can not be longer than 40 characters")

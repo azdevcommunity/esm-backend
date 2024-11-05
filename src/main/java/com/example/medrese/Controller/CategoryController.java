@@ -1,5 +1,7 @@
 package com.example.medrese.Controller;
 
+import com.example.medrese.DTO.Request.Create.CreateCategoryDTO;
+import com.example.medrese.DTO.Response.CategoryResponse;
 import com.example.medrese.Model.Category;
 import com.example.medrese.Service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +15,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
 public class CategoryController {
-    @Autowired
-    private CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
     @GetMapping
     public List<Category> getAllCategories() {
@@ -22,14 +24,13 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Integer id) {
-        Optional<Category> category = categoryService.getCategoryById(id);
-        return category.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Integer id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @PostMapping
-    public Category createCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category);
+    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CreateCategoryDTO createCategoryDTO) {
+        return ResponseEntity.ok(categoryService.createCategory(createCategoryDTO)) ;
     }
 
     @PutMapping("/{id}")

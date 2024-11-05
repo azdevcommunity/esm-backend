@@ -1,6 +1,6 @@
-package com.example.medrese.Core.DTO.Request.Create;
+package com.example.medrese.DTO.Request.Create;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +11,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateAuthor {
+public class CreateBookDTO {
 
+    @NotBlank(message = "Title is required")
+    String title;
 
-    @NotBlank(message = "Name is required" )
-    @Size(max = 35, message = "Name is should be less than 35 characters")
-    String name;
+    @NotNull(message = "Author Id is required")
+    Integer authorId;
 
-
-    @NotBlank (message = "Image is required")
+    @NotNull(message = "Image can not be null")
     String image;
+
 }

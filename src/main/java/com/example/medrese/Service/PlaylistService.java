@@ -1,8 +1,13 @@
 package com.example.medrese.Service;
 
+import com.example.medrese.DTO.Request.Create.CreatePlaylistDTO;
+import com.example.medrese.DTO.Response.PlaylistResponse;
 import com.example.medrese.Model.Playlist;
 import com.example.medrese.Repository.PlaylistRepository;
+import com.example.medrese.mapper.PlaylistMapper;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -10,20 +15,24 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+
 public class PlaylistService  {
-    @Autowired
-    private PlaylistRepository playlistRepository;
+     PlaylistRepository playlistRepository;
+     PlaylistMapper playlistMapper;
 
     public List<Playlist> getAllPlaylists() {
         return playlistRepository.findAll();
     }
 
-    public Optional<Playlist> getPlaylistById(String playlistId) {
-        return playlistRepository.findById(playlistId);
+    public Playlist getPlaylistById(String playlistId) {
+        return  playlistRepository.findById(playlistId).orElseThrow(()->new RuntimeException("playlist not found"));
     }
 
-    public Playlist createPlaylist(Playlist playlist) {
-        return playlistRepository.save(playlist);
+    public PlaylistResponse createPlaylist(CreatePlaylistDTO createPlaylistDTO) {
+        Playlist playlist = playlistMapper.toEntity(createPlaylistDTO);
+        playlist = playlistRepository.save(playlist);
+        return playlistMapper.toResponse(playlist);
     }
 
     public Playlist updatePlaylist(String playlistId, Playlist playlistDetails) {

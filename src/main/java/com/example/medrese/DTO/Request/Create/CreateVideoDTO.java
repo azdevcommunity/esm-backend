@@ -1,7 +1,6 @@
 package com.example.medrese.DTO.Request.Create;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,21 +9,23 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreatePlaylist {
+public class CreateVideoDTO {
 
-    @NotBlank(message = "PlaylistId is required")
-    @Size(max = 40, message = "PlaylistId can not be longer than 40 characters")
-    String playlistId;
+    @NotBlank(message = "Video ID is required")
+    @Size(max = 15, message = "Video ID cannot be longer than 15 characters")
+    String videoId;
 
-    @NotNull(message = "PublishedAt can not be null")
     String publishedAt;
 
     String thumbnail;
 
     @NotBlank(message = "Title is required")
     String title;
-    int videoCount;
+
+    @NotBlank(message = "Playlist ID is required")
+    String playlistId;
+
 }

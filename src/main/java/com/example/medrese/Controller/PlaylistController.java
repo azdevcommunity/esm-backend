@@ -1,5 +1,7 @@
 package com.example.medrese.Controller;
 
+import com.example.medrese.DTO.Request.Create.CreatePlaylistDTO;
+import com.example.medrese.DTO.Response.PlaylistResponse;
 import com.example.medrese.Model.Playlist;
 import com.example.medrese.Service.PlaylistService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 public class PlaylistController {
-    @Autowired
     private PlaylistService playlistService;
 
     @GetMapping
@@ -24,13 +25,12 @@ public class PlaylistController {
 
     @GetMapping("/{playlistId}")
     public ResponseEntity<Playlist> getPlaylistById(@PathVariable String playlistId) {
-        Optional<Playlist> playlist = playlistService.getPlaylistById(playlistId);
-        return playlist.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(playlistService.getPlaylistById(playlistId));
     }
 
     @PostMapping
-    public Playlist createPlaylist(@RequestBody Playlist playlist) {
-        return playlistService.createPlaylist(playlist);
+    public ResponseEntity<PlaylistResponse> createPlaylist(@RequestBody CreatePlaylistDTO createPlaylistDTO) {
+        return ResponseEntity.ok(playlistService.createPlaylist(createPlaylistDTO)) ;
     }
 
     @PutMapping("/{playlistId}")

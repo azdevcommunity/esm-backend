@@ -1,12 +1,16 @@
 package com.example.medrese.Controller;
 
 
+import com.example.medrese.DTO.Request.Create.CreateStatisticDTO;
+import com.example.medrese.DTO.Response.StatisticResponse;
 import com.example.medrese.Model.Statistic;
 import com.example.medrese.Service.StatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.naming.ldap.StartTlsResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,13 +28,12 @@ public class StatisticsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Statistic> getStatisticById(@PathVariable Integer id) {
-        Optional<Statistic> statistic = statisticService.getStatisticById(id);
-        return statistic.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(statisticService.getStatisticById(id));
     }
 
     @PostMapping
-    public Statistic createStatistic(@RequestBody Statistic statistic) {
-        return statisticService.createStatistic(statistic);
+    public ResponseEntity<StatisticResponse> createStatistic(@RequestBody CreateStatisticDTO createStatisticDTO) {
+        return ResponseEntity.ok(statisticService.createStatistic(createStatisticDTO)) ;
     }
 
     @PutMapping("/{id}")

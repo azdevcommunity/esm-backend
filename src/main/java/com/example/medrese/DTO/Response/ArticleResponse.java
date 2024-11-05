@@ -1,6 +1,6 @@
 package com.example.medrese.DTO.Response;
 
-import com.msys.esm.Model.Author;
+import com.example.medrese.Model.Author;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

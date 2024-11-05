@@ -1,4 +1,4 @@
-package com.example.medrese.Core.DTO.Request.Create;
+package com.example.medrese.DTO.Request.Create;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateCategory  {
+public class CreateCategoryDTO {
 
     @NotBlank(message = "Name is required")
     String name;

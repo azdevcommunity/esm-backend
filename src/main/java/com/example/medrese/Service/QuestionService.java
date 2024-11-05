@@ -1,8 +1,11 @@
 package com.example.medrese.Service;
 
 
+import com.example.medrese.DTO.Request.Create.CreateQuestionDTO;
+import com.example.medrese.DTO.Response.QuestionResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Repository.QuestionRepository;
+import com.example.medrese.mapper.QuestionMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,21 +16,25 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+
 public class QuestionService {
 
-    @Autowired
-    private QuestionRepository questionRepository;
+     QuestionRepository questionRepository;
+     QuestionMapper questionMapper;
 
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
 
-    public Optional<Question> getQuestionById(Integer id) {
-        return questionRepository.findById(id);
+    public Question getQuestionById(Integer id) {
+        return questionRepository.findById(id).orElseThrow(()-> new RuntimeException("question not found"));
     }
 
-    public Question createQuestion(Question question) {
-        return questionRepository.save(question);
+    public QuestionResponse createQuestion(CreateQuestionDTO createQuestionDTO) {
+        Question question = questionMapper.toEntity(createQuestionDTO);
+        question = questionRepository.save(question);
+        return  questionMapper.toResponse(question);
     }
 
     public Question updateQuestion(Integer id, Question questionDetails) {

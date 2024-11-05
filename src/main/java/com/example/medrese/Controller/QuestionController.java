@@ -1,6 +1,8 @@
 package com.example.medrese.Controller;
 
 
+import com.example.medrese.DTO.Request.Create.CreateQuestionDTO;
+import com.example.medrese.DTO.Response.QuestionResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,12 @@ public class QuestionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable Integer id) {
-        Optional<Question> question = questionService.getQuestionById(id);
-        return question.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(questionService.getQuestionById(id));
     }
 
     @PostMapping
-    public Question createQuestion(@RequestBody Question question) {
-        return questionService.createQuestion(question);
+    public ResponseEntity<QuestionResponse> createQuestion(@RequestBody CreateQuestionDTO createQuestionDTO) {
+        return ResponseEntity.ok(questionService.createQuestion(createQuestionDTO)) ;
     }
 
     @PutMapping("/{id}")

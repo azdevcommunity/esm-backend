@@ -1,8 +1,11 @@
 package com.example.medrese.Service;
 
 
+import com.example.medrese.DTO.Request.Create.CreateCategoryDTO;
+import com.example.medrese.DTO.Response.CategoryResponse;
 import com.example.medrese.Model.Category;
 import com.example.medrese.Repository.CategoryRepository;
+import com.example.medrese.mapper.CategoryMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,20 +16,28 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+
 public class CategoryService  {
-    @Autowired
-    private CategoryRepository categoryRepository;
+     CategoryRepository categoryRepository;
+     CategoryMapper categoryMapper;
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getCategoryById(Integer id) {
-        return categoryRepository.findById(id);
+    public CategoryResponse getCategoryById(Integer id) {
+        Category category =  categoryRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Category not found"));
+        return categoryMapper.toResponse(category);
     }
 
-    public Category createCategory(Category category) {
-        return categoryRepository.save(category);
+    public CategoryResponse createCategory(CreateCategoryDTO createCategoryDTO) {
+        Category category = categoryMapper.toEntity(createCategoryDTO);
+
+         return categoryMapper.toResponse(category);
+
+
     }
 
     public Category updateCategory(Integer id, Category categoryDetails) {
