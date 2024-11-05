@@ -1,6 +1,5 @@
 package com.example.medrese.Model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,14 +9,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "author_books")
+@Table(name = "author_articles")
 @Builder
-public class AuthorBook {
-
+public class AuthorArticle {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     Integer authorId;
-    Integer bookId;
+    Integer articleId;
 }
