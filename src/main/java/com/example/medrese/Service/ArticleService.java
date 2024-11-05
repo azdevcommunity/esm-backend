@@ -5,7 +5,6 @@ import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleResponse;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.ArticleCategory;
-import com.example.medrese.Model.Author;
 import com.example.medrese.Model.AuthorArticle;
 import com.example.medrese.Repository.*;
 import com.example.medrese.mapper.ArticleMapper;
@@ -30,8 +29,10 @@ public class ArticleService {
     AuthorRepository authorRepository;
     AuthorArticleRepository authorArticleRepository;
 
-    public List<Article> getAllArticles() {
-        return articleRepository.findAll();
+    public List<ArticleResponse> getAllArticles() {
+        return articleRepository.findAll().stream()
+                .map(articleMapper::toResponse)
+                .toList();
     }
 
     public Article getArticleById(Integer id) {
@@ -41,6 +42,9 @@ public class ArticleService {
 
     @Transactional
     public ArticleResponse createArticle(CreateArticleDTO createArticleDTO) {
+        if (articleRepository.existsByTitle(createArticleDTO.getTitle())) {
+            throw new RuntimeException("article with same title already exists");
+        }
 
         Article article = articleMapper.toEntity(createArticleDTO);
         article = articleRepository.save(article);

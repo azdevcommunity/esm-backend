@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Integer> {
 //    boolean existsAuthorById(int id);
+
+    boolean existsByName(String name);
 }

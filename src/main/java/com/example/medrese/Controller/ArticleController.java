@@ -19,8 +19,8 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping
-    public List<Article> getAllArticles() {
-        return articleService.getAllArticles();
+    public ResponseEntity<List<ArticleResponse>> getAllArticles() {
+        return ResponseEntity.ok(articleService.getAllArticles());
     }
 
     @GetMapping("/{id}")
@@ -28,8 +28,6 @@ public class ArticleController {
          return ResponseEntity.ok(articleService.getArticleById(id)) ;
 
     }
-
-
 
     @PostMapping
     public ResponseEntity<ArticleResponse> createArticle(@RequestBody CreateArticleDTO article) {
@@ -46,4 +44,5 @@ public class ArticleController {
     public ResponseEntity<Void> deleteArticle(@PathVariable Integer id) {
         articleService.deleteArticle(id);
         return ResponseEntity.noContent().build();
-    }}
+    }
+}
