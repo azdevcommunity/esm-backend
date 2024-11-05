@@ -4,6 +4,7 @@ package com.example.medrese.Service.ExceptionHandler;
 import com.example.medrese.Core.Util.Exceptions.ArticleAlreadyExsitsException;
 import com.example.medrese.Core.Util.Exceptions.Global.ErrorResponse;
 import com.example.medrese.Core.Util.Exceptions.Global.NotFoundException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -71,5 +72,13 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(Exception.class)
+    public  ResponseEntity<Object> handleArticleException(Exception ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 
 }

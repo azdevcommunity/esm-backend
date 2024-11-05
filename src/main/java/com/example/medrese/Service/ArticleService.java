@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -72,15 +71,51 @@ public class ArticleService {
     }
 
     public Article updateArticle(Integer id, UpdateArticle articleDetails) {
-        return articleRepository.findById(id).map(article -> {
-            article.setPublishedAt(articleDetails.getPublishedAt());
-            article.setTitle(articleDetails.getTitle());
-            article.setContent(articleDetails.getContent());
-            return articleRepository.save(article);
-        }).orElseThrow(() -> new RuntimeException("Article not found with id " + id));
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Article not found with id " + id));
+
+        if (articleRepository.existsByTitleAndIdNot(articleDetails.getTitle(), article.getId())) {
+            throw new RuntimeException("article with same title already exists");
+        }
+
+        article.setPublishedAt(articleDetails.getPublishedAt());
+        article.setTitle(articleDetails.getTitle());
+        article.setContent(articleDetails.getContent());
+        article = articleRepository.save(article);
+
+        articleCategoryRepository.deleteByArticleIdIn(articleDetails.getCategories().stream().toList());
+        for (Integer category : articleDetails.getCategories()) {
+            if (articleCategoryRepository.existsByCategoryId(category)) {
+                ArticleCategory articleCategory = ArticleCategory.builder()
+                        .categoryId(category)
+                        .articleId(article.getId())
+                        .build();
+                articleCategoryRepository.save(articleCategory);
+            }
+        }
+
+        authorArticleRepository.deleteByAuthorIdInAndArticleId(articleDetails.getAuthorIds().stream().toList(),article.getId());
+        for (Integer author : articleDetails.getAuthorIds()) {
+            if (authorArticleRepository.existsByAuthorId(author)) {
+                AuthorArticle authorArticle = AuthorArticle.builder()
+                        .articleId(article.getId())
+                        .authorId(author)
+                        .build();
+                authorArticleRepository.save(authorArticle);
+            }
+        }
+
+
+        return article;
     }
 
     public void deleteArticle(Integer id) {
+        if (articleRepository.existsById(id)) {
+            throw new RuntimeException("does not exist");
+        }
+
+        articleCategoryRepository.deleteByArticleId(id);
+
         articleRepository.deleteById(id);
     }
 

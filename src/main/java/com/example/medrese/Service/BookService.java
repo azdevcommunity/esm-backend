@@ -10,6 +10,7 @@ import com.example.medrese.Model.AuthorBook;
 import com.example.medrese.Model.Book;
 import com.example.medrese.Repository.AuthorBookRepository;
 import com.example.medrese.Repository.AuthorRepository;
+import com.example.medrese.Repository.BookCategoryRepository;
 import com.example.medrese.Repository.BookRepository;
 import com.example.medrese.mapper.BookMapper;
 import lombok.AccessLevel;
@@ -33,9 +34,13 @@ public class BookService {
     BookMapper bookMapper;
     AuthorRepository authorRepository;
     AuthorBookRepository authorBookRepository;
+    BookCategoryRepository bookCategoryRepository;
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<BookResponse> getAllBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toResponse)
+                .toList();
     }
 
     public BookResponse getBookById(Integer id) {
@@ -80,6 +85,8 @@ public class BookService {
         if (!authorBookRepository.existsByBookId(id)) {
             throw new RuntimeException("Author book not exists");
         }
+
+        bookCategoryRepository.deleteByBookId(id);
 
         authorBookRepository.deleteByBookId(id);
     }

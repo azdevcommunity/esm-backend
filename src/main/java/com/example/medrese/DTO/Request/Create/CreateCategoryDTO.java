@@ -17,7 +17,7 @@ public class CreateCategoryDTO {
     @NotBlank(message = "Name is required")
     String name;
 
-    int parentId;
+    Integer parentId;
 
     Set<Integer> subCategories;
 

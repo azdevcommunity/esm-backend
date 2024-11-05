@@ -20,7 +20,7 @@ public class UpdateArticle {
 
     String content;
 
-    int author_id;
+    Set<Integer> authorIds;
 
     Set<Integer> categories;
 }

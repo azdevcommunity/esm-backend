@@ -8,15 +8,14 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "question_categories", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
-public class QuestionCategory {
-
+@Table(name = "book_category")
+@Builder
+public class BookCategory {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    Integer questionId;
     Integer categoryId;
+    Integer bookId;
 }

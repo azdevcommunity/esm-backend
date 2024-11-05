@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
 
-    boolean existsByTitle(String title);
+    boolean existsByTitleAndIdNot(String title, Integer id);
 
+    boolean existsByTitle(String title);
 }

@@ -8,6 +8,8 @@ public class MedreseApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MedreseApplication.class, args);
+
+		
 	}
 
 }

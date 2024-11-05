@@ -44,6 +44,9 @@ public class PlaylistService  {
     }
 
     public void deletePlaylist(String playlistId) {
+        if (!playlistRepository.existsById(playlistId)){
+            throw new RuntimeException("doesnt exist");
+        }
         playlistRepository.deleteById(playlistId);
     }
 }

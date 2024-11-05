@@ -50,6 +50,9 @@ public class StatisticsService  {
     }
 
     public void deleteStatistic(Integer id) {
+        if (!statisticRepository.existsById(id)){
+            throw new RuntimeException("does not exist");
+        }
         statisticRepository.deleteById(id);
     }
 }
