@@ -27,7 +27,7 @@ public class Author  {
     @Column(name = "name", unique = true)
     String name;
 
-    @NotBlank
+
     @Column(name = "image")
     String image;
 

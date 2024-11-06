@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "categories", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
+@Table(name = "article_categories", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 public class ArticleCategory {
     @Id
     @Column(name = "id")

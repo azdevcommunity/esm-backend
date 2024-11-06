@@ -2,6 +2,7 @@ package com.example.medrese.Service;
 
 
 import com.example.medrese.DTO.Request.Create.CreateAuthorDTO;
+import com.example.medrese.DTO.Request.Update.UpdateAuthor;
 import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.Model.Author;
 import com.example.medrese.Repository.AuthorArticleRepository;
@@ -14,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -26,12 +28,16 @@ public class AuthorService {
     private final AuthorBookRepository authorBookRepository;
     private final AuthorArticleRepository authorArticleRepository;
 
-    public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+    public List<AuthorResponse> getAllAuthors() {
+        return authorRepository.findAll().stream()
+                .map(authorMapper::toResponse)
+                .toList();
     }
 
-    public Author getAuthorById(Integer id) {
-        return authorRepository.findById(id).orElseThrow(() -> new RuntimeException("article not found"));
+    public AuthorResponse getAuthorById(Integer id) {
+        return authorRepository.findById(id)
+                .map(authorMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("article not found"));
     }
 
     public AuthorResponse createAuthor(CreateAuthorDTO createAuthorDTO) {
@@ -45,12 +51,17 @@ public class AuthorService {
         return authorMapper.toResponse(author);
     }
 
-    public Author updateAuthor(Integer id, Author authorDetails) {
-        return authorRepository.findById(id).map(author -> {
+    public AuthorResponse updateAuthor(Integer id, UpdateAuthor authorDetails) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
+
+        if(Objects.nonNull(authorDetails.getName())){
             author.setName(authorDetails.getName());
-            author.setImage(authorDetails.getImage());
-            return authorRepository.save(author);
-        }).orElseThrow(() -> new RuntimeException("Author not found with id " + id));
+        }
+        author.setImage(authorDetails.getImage());
+        author = authorRepository.save(author);
+
+        return authorMapper.toResponse(author);
     }
 
     public void deleteAuthor(Integer id) {

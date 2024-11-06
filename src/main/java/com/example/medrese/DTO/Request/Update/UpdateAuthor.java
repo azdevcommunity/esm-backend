@@ -1,4 +1,6 @@
 package com.example.medrese.DTO.Request.Update;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +13,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAuthor {
 
+    @NotBlank
     String name;
+
 
     String image;
 }

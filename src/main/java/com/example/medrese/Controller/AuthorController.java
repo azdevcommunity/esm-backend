@@ -2,9 +2,11 @@ package com.example.medrese.Controller;
 
 
 import com.example.medrese.DTO.Request.Create.CreateAuthorDTO;
+import com.example.medrese.DTO.Request.Update.UpdateAuthor;
 import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.Model.Author;
 import com.example.medrese.Service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +23,12 @@ public class AuthorController {
     private AuthorService authorService;
 
     @GetMapping
-    public List<Author> getAllAuthors() {
+    public List<AuthorResponse> getAllAuthors() {
         return authorService.getAllAuthors();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getAuthorById(@PathVariable Integer id) {
+    public ResponseEntity<AuthorResponse> getAuthorById(@PathVariable Integer id) {
         return ResponseEntity.ok(authorService.getAuthorById(id));
     }
 
@@ -36,9 +38,8 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable Integer id, @RequestBody Author authorDetails) {
-        Author updatedAuthor = authorService.updateAuthor(id, authorDetails);
-        return ResponseEntity.ok(updatedAuthor);
+    public ResponseEntity<AuthorResponse> updateAuthor(@PathVariable Integer id,  @RequestBody UpdateAuthor authorDetails) {
+        return ResponseEntity.ok(authorService.updateAuthor(id, authorDetails));
     }
 
     @DeleteMapping("/{id}")

@@ -2,6 +2,7 @@ package com.example.medrese.Service;
 
 
 import com.example.medrese.DTO.Request.Create.CreateCategoryDTO;
+import com.example.medrese.DTO.Request.Update.UpdateCategory;
 import com.example.medrese.DTO.Response.CategoryResponse;
 import com.example.medrese.Model.Category;
 import com.example.medrese.Repository.ArticleCategoryRepository;
@@ -12,12 +13,9 @@ import com.example.medrese.mapper.CategoryMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,12 +54,13 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    public Category updateCategory(Integer id, Category categoryDetails) {
-        return categoryRepository.findById(id).map(category -> {
-            category.setParentId(categoryDetails.getParentId());
-            category.setName(categoryDetails.getName());
-            return categoryRepository.save(category);
-        }).orElseThrow(() -> new RuntimeException("Category not found with id " + id));
+    public CategoryResponse updateCategory(Integer id, UpdateCategory categoryDetails) {
+        Category category = categoryRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Category not found with id " + id));
+        category.setParentId(categoryDetails.getParentId());
+        category.setName(categoryDetails.getName());
+        category =categoryRepository.save(category);
+        return categoryMapper.toResponse(category);
     }
 
     public void deleteCategory(Integer id) {

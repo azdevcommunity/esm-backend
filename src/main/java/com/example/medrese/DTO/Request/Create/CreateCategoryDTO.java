@@ -18,7 +18,4 @@ public class CreateCategoryDTO {
     String name;
 
     Integer parentId;
-
-    Set<Integer> subCategories;
-
 }

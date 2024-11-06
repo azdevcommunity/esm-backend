@@ -1,12 +1,15 @@
 package com.example.medrese.Controller;
 
 import com.example.medrese.DTO.Request.Create.CreateCategoryDTO;
+import com.example.medrese.DTO.Request.Update.UpdateCategory;
 import com.example.medrese.DTO.Response.CategoryResponse;
 import com.example.medrese.Model.Category;
 import com.example.medrese.Service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
+@Validated
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -29,18 +33,13 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CreateCategoryDTO createCategoryDTO) {
+    public ResponseEntity<CategoryResponse> createCategory(@RequestBody @Valid CreateCategoryDTO createCategoryDTO) {
         return ResponseEntity.ok(categoryService.createCategory(createCategoryDTO)) ;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody Category categoryDetails) {
-        try {
-            Category updatedCategory = categoryService.updateCategory(id, categoryDetails);
-            return ResponseEntity.ok(updatedCategory);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Integer id,@Valid @RequestBody UpdateCategory categoryDetails) {
+            return ResponseEntity.ok(categoryService.updateCategory(id, categoryDetails));
     }
 
     @DeleteMapping("/{id}")
