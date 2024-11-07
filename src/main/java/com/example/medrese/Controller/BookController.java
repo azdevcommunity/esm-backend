@@ -16,8 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/api/books")
 public class BookController {
-    @Autowired
-    private BookService bookService;
+
+    private final BookService bookService;
 
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAllBooks() {

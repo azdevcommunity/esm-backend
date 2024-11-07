@@ -16,5 +16,5 @@ import lombok.experimental.FieldDefaults;
 public class UpdateCategory  {
     @NotBlank(message = "name cannot be null")
     String name;
-    int parentId;
+    Integer parentId;
 }

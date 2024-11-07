@@ -25,7 +25,4 @@ public class Book {
     String title;
 
     String image;
-
-
-
 }
