@@ -12,7 +12,13 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookResponse {
 
-    int id;
+    Integer id;
 
     String title;
+
+    String image;
+
+    Integer authorId;
+
+    String authorName;
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -37,15 +38,12 @@ public class BookService {
     BookCategoryRepository bookCategoryRepository;
 
     public List<BookResponse> getAllBooks() {
-        return bookRepository.findAll()
-                .stream()
-                .map(bookMapper::toResponse)
-                .toList();
+        return bookRepository.findAllWithAuthor();
     }
 
     public BookResponse getBookById(Integer id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
-        return bookMapper.toResponse(book);
+        return bookRepository.findByIdWithAuthor(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
     }
 
     @Transactional
