@@ -24,3 +24,8 @@ spring:
 server:
   error:
     path: /error
+
+cloudinary:
+  cloud-name: ${BR10_CLOUDINARY_CLOUD_NAME:dhhlnrons}
+  api-key: ${BR10_CLOUDINARY_CLOUD_NAME:712786691512151}
+  api-secret: ${BR10_CLOUDINARY_CLOUD_NAME:AIp9AEAYuHYk_IQqDDozHF4Ew9M}
