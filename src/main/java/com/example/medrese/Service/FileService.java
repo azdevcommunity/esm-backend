@@ -69,9 +69,7 @@ public class FileService {
         if (ObjectUtils.isEmpty(fileName)) {
             return;
         }
-        ArrayList<String> list = new ArrayList<>();
-        list.add(fileName);
-        deleteFile(list);
+        deleteFile(new ArrayList<>(List.of(fileName)));
     }
 
     public void deleteFile(List<String> fileName) {
