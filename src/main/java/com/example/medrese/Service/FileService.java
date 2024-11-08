@@ -82,8 +82,7 @@ public class FileService {
                             .map(path -> {
                                 String name = path.substring(path.lastIndexOf('/') + 1);
                                 return name.substring(0, name.lastIndexOf('.'));
-                            })
-                            .toList(),
+                            }).toList(),
                     com.cloudinary.utils.ObjectUtils.asMap("type", "upload",
                             "resource_type", "image"));
             log.info(apiResponse);
