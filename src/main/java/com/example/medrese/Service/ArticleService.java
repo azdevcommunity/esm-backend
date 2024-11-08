@@ -27,6 +27,7 @@ public class ArticleService {
     ArticleCategoryRepository articleCategoryRepository;
     AuthorRepository authorRepository;
     AuthorArticleRepository authorArticleRepository;
+    FileService fileService;
 
     public List<ArticleResponse> getAllArticles() {
         return articleRepository.findAll().stream()

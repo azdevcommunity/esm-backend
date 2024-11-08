@@ -81,7 +81,8 @@ public class FileService {
             ApiResponse apiResponse = cloudinary.api().deleteResources(fileName.stream()
                             .map(path -> {
                                 String name = path.substring(path.lastIndexOf('/') + 1);
-                                return name.substring(0, name.lastIndexOf('.'));
+                                int dotIndex = name.lastIndexOf('.');
+                                return (dotIndex == -1) ? name : name.substring(0, dotIndex);
                             }).toList(),
                     com.cloudinary.utils.ObjectUtils.asMap("type", "upload",
                             "resource_type", "image"));
@@ -129,13 +130,18 @@ public class FileService {
                 .toString();
     }
 
-    private boolean isBase64(String base64) {
-        final Pattern BASE64_PATTERN = Pattern.compile("^[A-Za-z0-9+/]+={0,2}$");
-
-        if (Objects.isNull(base64) || base64.length() % 4 != 0 || !BASE64_PATTERN.matcher(base64).matches()) {
+    public boolean isBase64(String base64) {
+        if (ObjectUtils.isEmpty(base64)) {
             return false;
         }
-
+//        final Pattern BASE64_PATTERN = Pattern.compile("^[A-Za-z0-9+/]+={0,2}$");
+//
+//        if (Objects.isNull(base64) || base64.length() % 4 != 0 || !BASE64_PATTERN.matcher(base64).matches()) {
+//            return false;
+//        }
+        if (base64.contains(",")) {
+            base64 = base64.split(",")[1];
+        }
         try {
             java.util.Base64.getDecoder().decode(base64);
             return true;

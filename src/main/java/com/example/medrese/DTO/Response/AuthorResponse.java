@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthorResponse {
-    int id;
+    Integer id;
     String name;
     String image;
     Set<Integer> books;

@@ -72,13 +72,16 @@ public class BookService {
     public Book updateBook(Integer id, Book bookDetails) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BookMapper not found with id " + id));
-        String image = fileService.uploadFile(bookDetails.getImage());
-        bookDetails.setImage(image);
 
-        fileService.deleteFile(book.getImage());
+
+        if (fileService.isBase64(bookDetails.getImage())) {
+            fileService.deleteFile(book.getImage());
+            String image = fileService.uploadFile(bookDetails.getImage());
+            book.setImage(image);
+        }
 
         book.setTitle(bookDetails.getTitle());
-        book.setImage(bookDetails.getImage());
+
         return bookRepository.save(book);
     }
 

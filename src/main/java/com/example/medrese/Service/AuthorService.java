@@ -27,6 +27,7 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
     private final AuthorBookRepository authorBookRepository;
     private final AuthorArticleRepository authorArticleRepository;
+    private final FileService fileService;
 
     public List<AuthorResponse> getAllAuthors() {
         return authorRepository.findAll().stream()
@@ -45,6 +46,10 @@ public class AuthorService {
             throw new RuntimeException("author with same name already exists");
         }
 
+
+        String image = fileService.uploadFile(createAuthorDTO.getImage());
+        createAuthorDTO.setImage(image);
+
         Author author = authorMapper.toEntity(createAuthorDTO);
         author = authorRepository.save(author);
 
@@ -55,19 +60,28 @@ public class AuthorService {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
 
-        if(Objects.nonNull(authorDetails.getName())){
+        if (Objects.nonNull(authorDetails.getName())) {
             author.setName(authorDetails.getName());
         }
-        author.setImage(authorDetails.getImage());
+
+        if (fileService.isBase64(authorDetails.getImage())) {
+            fileService.deleteFile(author.getImage());
+            String image = fileService.uploadFile(authorDetails.getImage());
+            author.setImage(image);
+        }
+
         author = authorRepository.save(author);
 
         return authorMapper.toResponse(author);
     }
 
     public void deleteAuthor(Integer id) {
-        if (!authorRepository.existsById(id)) {
-            throw new RuntimeException("Author not found with id " + id);
-        }
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
+
+        fileService.deleteFile(author.getImage());
+
+        authorRepository.delete(author);
 
         if (authorBookRepository.existsByAuthorId(id)) {
             throw new RuntimeException("Bu authorun kitabi var sile bilmersen");
