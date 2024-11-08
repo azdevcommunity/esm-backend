@@ -36,6 +36,7 @@ public class BookService {
     AuthorRepository authorRepository;
     AuthorBookRepository authorBookRepository;
     BookCategoryRepository bookCategoryRepository;
+    FileService fileService;
 
     public List<BookResponse> getAllBooks() {
         return bookRepository.findAllWithAuthor();
@@ -51,6 +52,9 @@ public class BookService {
         if (!authorRepository.existsById(createBookDTO.getAuthorId())) {
             throw new RuntimeException("Author not exists");
         }
+
+        String image = fileService.uploadFile(createBookDTO.getImage());
+        createBookDTO.setImage(image);
 
         Book book = bookMapper.toEntity(createBookDTO);
         book = bookRepository.save(book);
@@ -68,6 +72,11 @@ public class BookService {
     public Book updateBook(Integer id, Book bookDetails) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BookMapper not found with id " + id));
+        String image = fileService.uploadFile(bookDetails.getImage());
+        bookDetails.setImage(image);
+
+        fileService.deleteFile(book.getImage());
+
         book.setTitle(bookDetails.getTitle());
         book.setImage(bookDetails.getImage());
         return bookRepository.save(book);
@@ -75,10 +84,12 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Integer id) {
-        if (!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found with id " + id);
-        }
-        bookRepository.deleteById(id);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
+
+        fileService.deleteFile(book.getImage());
+
+        bookRepository.delete(book);
 
         if (!authorBookRepository.existsByBookId(id)) {
             throw new RuntimeException("Author book not exists");
