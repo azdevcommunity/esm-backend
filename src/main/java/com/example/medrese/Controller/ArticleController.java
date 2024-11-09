@@ -34,10 +34,19 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleResponse> getArticleById(@PathVariable Integer id) {
-         return ResponseEntity.ok(articleService.getArticleById(id)) ;
+    public ResponseEntity<?> getArticle(
+            @PathVariable Integer id,
+            @RequestHeader(value = "X-Admin-Request", defaultValue = "false") boolean isAdminRequest) {
 
+        ArticleResponse article = articleService.getArticleById(id, isAdminRequest);
+        return ResponseEntity.ok(article);
     }
+
+    @GetMapping("/popular")
+    public ResponseEntity<?> getPopularArticles() {
+        return ResponseEntity.ok(articleService.getPopularArticles());
+    }
+
 
     @PostMapping
     public ResponseEntity<ArticleResponse> createArticle(@RequestBody CreateArticleDTO article) {

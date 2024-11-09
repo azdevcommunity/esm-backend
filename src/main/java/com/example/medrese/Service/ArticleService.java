@@ -5,6 +5,7 @@ import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleResponse;
 import com.example.medrese.DTO.Response.AuthorResponse;
+import com.example.medrese.DTO.Response.PopularArticleProjection;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.ArticleCategory;
 import com.example.medrese.Model.AuthorArticle;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,7 @@ public class ArticleService {
         return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);
     }
 
-    public ArticleResponse getArticleById(Integer id) {
+    public ArticleResponse getArticleById(Integer id, boolean isAdminRequest) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("author not found"));
         List<AuthorResponse> authors = authorRepository.findByArticleId(id);
         List<Integer> categories = articleCategoryRepository.findByArticleId(article.getId()).stream()
@@ -51,9 +53,20 @@ public class ArticleService {
                 .stream()
                 .toList();
 
+        if (!isAdminRequest) {
+            Long count = article.getReadCount();
+            if (ObjectUtils.isEmpty(count)) {
+                count = 0L;
+            }
+            article.setReadCount(count + 1);
+            articleRepository.save(article);
+        }
+
         ArticleResponse articleResponse = articleMapper.toResponse(article);
         articleResponse.setAuthors(authors);
         articleResponse.setCategories(categories);
+
+
         return articleResponse;
     }
 
@@ -160,5 +173,10 @@ public class ArticleService {
 
     }
 
+
+    public List<PopularArticleProjection> getPopularArticles() {
+        return articleRepository.findTopArticles(4);
+
+    }
 
 }

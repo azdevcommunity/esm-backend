@@ -36,4 +36,8 @@ public class Article {
     @Column(name = "image")
     String image;
 
+
+    @Column(name = "read_count", nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    Long readCount = 0L;
+
 }

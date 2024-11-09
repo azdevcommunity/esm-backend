@@ -23,4 +23,5 @@ public class ArticleResponse {
     List<AuthorResponse> authors;
     List<Integer> categories;
     String image;
+    Long readCount;
 }
