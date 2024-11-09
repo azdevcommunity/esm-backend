@@ -79,10 +79,6 @@ public class AuthorService {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Author not found with id " + id));
 
-        fileService.deleteFile(author.getImage());
-
-        authorRepository.delete(author);
-
         if (authorBookRepository.existsByAuthorId(id)) {
             throw new RuntimeException("Bu authorun kitabi var sile bilmersen");
         }
@@ -91,7 +87,13 @@ public class AuthorService {
             throw new RuntimeException("Bu authorun meqalesi var sile bilmersen");
         }
 
+        authorRepository.delete(author);
+
+
+
         authorRepository.deleteById(id);
+
+        fileService.deleteFile(author.getImage());
     }
 
 

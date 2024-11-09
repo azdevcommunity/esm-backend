@@ -19,12 +19,12 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<List<ArticleResponse>> getAllArticles() {
+    public ResponseEntity<List<?>> getAllArticles() {
         return ResponseEntity.ok(articleService.getAllArticles());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Article> getArticleById(@PathVariable Integer id) {
+    public ResponseEntity<ArticleResponse> getArticleById(@PathVariable Integer id) {
          return ResponseEntity.ok(articleService.getArticleById(id)) ;
 
     }

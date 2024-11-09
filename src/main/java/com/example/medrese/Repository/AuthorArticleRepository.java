@@ -12,5 +12,7 @@ public interface AuthorArticleRepository extends JpaRepository<AuthorArticle, In
     boolean existsByAuthorId(int id);
 
     void deleteByAuthorIdInAndArticleId(List<Integer> ids, int id);
+
+    List<AuthorArticle> findByArticleId(int id);
 }
 

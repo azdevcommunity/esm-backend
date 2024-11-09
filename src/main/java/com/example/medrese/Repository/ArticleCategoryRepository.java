@@ -1,5 +1,6 @@
 package com.example.medrese.Repository;
 
+import com.example.medrese.DTO.Response.CategoryResponse;
 import com.example.medrese.Model.ArticleCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,7 @@ public interface ArticleCategoryRepository extends JpaRepository<ArticleCategory
     void deleteByArticleId(int id);
 
     void deleteByArticleIdIn(List<Integer> ids);
+
+    List<ArticleCategory> findByArticleId(int id);
+
 }

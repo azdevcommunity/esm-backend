@@ -16,6 +16,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateArticleDTO {
 
+    @NotNull
+    String image;
+
     @NotBlank(message = "PublishedAt can not be empty")
     String publishedAt;
 
@@ -30,5 +33,4 @@ public class CreateArticleDTO {
 
     @NotNull(message = "Categories is required")
     Set<Integer> categories;
-
 }

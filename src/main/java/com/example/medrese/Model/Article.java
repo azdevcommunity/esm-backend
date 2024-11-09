@@ -33,4 +33,7 @@ public class Article {
     String content;
 
 
+    @Column(name = "image")
+    String image;
+
 }

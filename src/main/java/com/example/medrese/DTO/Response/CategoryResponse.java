@@ -1,9 +1,6 @@
 package com.example.medrese.DTO.Response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
@@ -12,10 +9,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
 public class CategoryResponse {
-    int id;
+    Integer id;
     String name;
-    int parentId;
+    Integer parentId;
     Set<Integer> subCategories;
     Set<Integer> articles;
 }

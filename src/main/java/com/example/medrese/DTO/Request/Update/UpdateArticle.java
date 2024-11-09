@@ -23,4 +23,6 @@ public class UpdateArticle {
     Set<Integer> authorIds;
 
     Set<Integer> categories;
+
+    String image;
 }

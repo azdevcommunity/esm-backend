@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -14,10 +15,11 @@ import java.util.Set;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ArticleResponse {
-    int id;
+    Integer id;
     String publishedAt;
     String title;
     String content;
-    Author author;
-    Set<Integer> categories;
+    List<Integer> authors;
+    List<Integer> categories;
+    String image;
 }

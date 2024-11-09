@@ -84,6 +84,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public  ResponseEntity<Object> handleArticleException(Exception ex) {
         log.error(ex);
+        ex.printStackTrace();
         ErrorResponse response = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

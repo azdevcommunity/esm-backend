@@ -90,17 +90,19 @@ public class BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
 
-        fileService.deleteFile(book.getImage());
-
-        bookRepository.delete(book);
-
         if (!authorBookRepository.existsByBookId(id)) {
             throw new RuntimeException("Author book not exists");
         }
 
+
         bookCategoryRepository.deleteByBookId(id);
 
         authorBookRepository.deleteByBookId(id);
+
+        bookRepository.delete(book);
+
+        fileService.deleteFile(book.getImage());
+
     }
 }
 
