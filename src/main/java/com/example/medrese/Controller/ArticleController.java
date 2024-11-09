@@ -2,11 +2,15 @@ package com.example.medrese.Controller;
 
 import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
+import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleResponse;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.Author;
 import com.example.medrese.Service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -19,8 +23,14 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<List<?>> getAllArticles() {
-        return ResponseEntity.ok(articleService.getAllArticles());
+    public ResponseEntity<Page<ArticleProjection>> getAllArticles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long categoryId) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ArticleProjection> articles = articleService.getAllArticles(pageable, categoryId);
+        return ResponseEntity.ok(articles);
     }
 
     @GetMapping("/{id}")

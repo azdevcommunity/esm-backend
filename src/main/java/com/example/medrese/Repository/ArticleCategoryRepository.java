@@ -14,7 +14,7 @@ public interface ArticleCategoryRepository extends JpaRepository<ArticleCategory
 
     void deleteByArticleId(int id);
 
-    void deleteByArticleIdIn(List<Integer> ids);
+    void deleteByArticleIdInAndArticleId(List<Integer> ids, Integer id);
 
     List<ArticleCategory> findByArticleId(int id);
 

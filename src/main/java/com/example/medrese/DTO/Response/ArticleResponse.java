@@ -1,5 +1,6 @@
 package com.example.medrese.DTO.Response;
 
+import com.example.medrese.Model.Article;
 import com.example.medrese.Model.Author;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class ArticleResponse {
     String publishedAt;
     String title;
     String content;
-    List<Integer> authors;
+    List<AuthorResponse> authors;
     List<Integer> categories;
     String image;
 }

@@ -4,6 +4,7 @@ import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleResponse;
+import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.ArticleCategory;
 import com.example.medrese.Model.AuthorArticle;
@@ -12,11 +13,14 @@ import com.example.medrese.mapper.ArticleMapper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -31,19 +35,22 @@ public class ArticleService {
     AuthorArticleRepository authorArticleRepository;
     FileService fileService;
 
-    public List<ArticleProjection> getAllArticles() {
-        return articleRepository.findAllArticlesWithAuthorsAndCategories();
-
+    public Page<ArticleProjection> getAllArticles(Pageable pageable, Long categoryId) {
+        if (ObjectUtils.isEmpty(categoryId) || categoryId == 0) {
+            return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable);
+        }
+        return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);
     }
 
     public ArticleResponse getArticleById(Integer id) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("author not found"));
-        List<Integer> authors = authorArticleRepository.findByArticleId(article.getId()).stream()
-                .map(AuthorArticle::getAuthorId)
-                .toList();
+        List<AuthorResponse> authors = authorRepository.findByArticleId(id);
         List<Integer> categories = articleCategoryRepository.findByArticleId(article.getId()).stream()
                 .map(ArticleCategory::getCategoryId)
+                .collect(Collectors.toSet())
+                .stream()
                 .toList();
+
         ArticleResponse articleResponse = articleMapper.toResponse(article);
         articleResponse.setAuthors(authors);
         articleResponse.setCategories(categories);
@@ -109,10 +116,10 @@ public class ArticleService {
         article.setContent(articleDetails.getContent());
         article = articleRepository.save(article);
 
-        if(!ObjectUtils.isEmpty(articleDetails.getCategories())){
-            articleCategoryRepository.deleteByArticleIdIn(articleDetails.getCategories().stream().toList());
+        if (!ObjectUtils.isEmpty(articleDetails.getCategories())) {
+            articleCategoryRepository.deleteByArticleIdInAndArticleId(articleDetails.getCategories().stream().toList(), article.getId());
             for (Integer category : articleDetails.getCategories()) {
-                if (articleCategoryRepository.existsByCategoryId(category)) {
+                if (categoryRepository.existsById(category)) {
                     ArticleCategory articleCategory = ArticleCategory.builder()
                             .categoryId(category)
                             .articleId(article.getId())
@@ -122,19 +129,19 @@ public class ArticleService {
             }
         }
 
-       if(!ObjectUtils.isEmpty(articleDetails.getAuthorIds())){
-           authorArticleRepository.deleteByAuthorIdInAndArticleId(articleDetails.getAuthorIds().stream().toList(), article.getId());
-           for (Integer author : articleDetails.getAuthorIds()) {
-               if (authorArticleRepository.existsByAuthorId(author)) {
-                   AuthorArticle authorArticle = AuthorArticle.builder()
-                           .articleId(article.getId())
-                           .authorId(author)
-                           .build();
-                   authorArticleRepository.save(authorArticle);
-               }
-           }
+        if (!ObjectUtils.isEmpty(articleDetails.getAuthorIds())) {
+            authorArticleRepository.deleteByAuthorIdInAndArticleId(articleDetails.getAuthorIds().stream().toList(), article.getId());
+            for (Integer author : articleDetails.getAuthorIds()) {
+                if (authorRepository.existsById(author)) {
+                    AuthorArticle authorArticle = AuthorArticle.builder()
+                            .articleId(article.getId())
+                            .authorId(author)
+                            .build();
+                    authorArticleRepository.save(authorArticle);
+                }
+            }
 
-       }
+        }
 
 
         return article;

@@ -1,13 +1,11 @@
 package com.example.medrese.DTO.Response;
 
+import java.util.List;
+
 public interface ArticleProjection {
-    Integer getId();
-
+    Long getId();
     String getTitle();
-
     String getImage();
-
-    String getAuthors();
-
-    String getCategories();
+    List<String> getAuthors();
+    List<String> getCategories();
 }
