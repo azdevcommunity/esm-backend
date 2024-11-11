@@ -1,9 +1,16 @@
-
 spring:
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000, expireAfterWrite=10m
   datasource:
-    url: jdbc:postgresql://localhost:5434/esmdb
-    username: postgres
-    password: 123456789
+    url: jdbc:postgresql://ep-floral-snow-a4msacjt-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require
+    username: default
+    password: 0RNlqZuUGC2b
+    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5434/esmdb
+#    username: postgres
+#    password: 123456789
   jpa:
     hibernate:
       ddl-auto: none
@@ -25,6 +32,8 @@ server:
   error:
     path: /error
 
+youtube:
+  channel-id: UC1B8clCxtmb-bzCDdxmVPDA
 cloudinary:
   cloud-name: ${BR10_CLOUDINARY_CLOUD_NAME:dhhlnrons}
   api-key: ${BR10_CLOUDINARY_CLOUD_NAME:712786691512151}

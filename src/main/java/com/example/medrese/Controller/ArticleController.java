@@ -33,6 +33,12 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<ArticleProjection>> getAllArticles() {
+        List<ArticleProjection> articles = articleService.getAllArticles();
+        return ResponseEntity.ok(articles);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getArticle(
             @PathVariable Integer id,
@@ -45,6 +51,12 @@ public class ArticleController {
     @GetMapping("/popular")
     public ResponseEntity<?> getPopularArticles() {
         return ResponseEntity.ok(articleService.getPopularArticles());
+    }
+
+    @PutMapping("/count/{id}")
+    public ResponseEntity<?> incrementReadCount(@PathVariable Integer id) {
+        articleService.incrementReadCount(id);
+        return ResponseEntity.ok().build();
     }
 
 

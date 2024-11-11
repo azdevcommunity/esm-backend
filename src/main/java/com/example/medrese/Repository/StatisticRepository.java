@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface StatisticRepository extends JpaRepository<Statistic, Integer> {
-//    Optional<Statistic> findByPlatformName (String platformName);
+    Optional<Statistic> findByPlatformName (String platformName);
 }

@@ -44,6 +44,10 @@ public class ArticleService {
         return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);
     }
 
+    public List<ArticleProjection> getAllArticles() {
+        return articleRepository.findAllArticlesWithAuthorsAndCategories();
+    }
+
     public ArticleResponse getArticleById(Integer id, boolean isAdminRequest) {
         Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("author not found"));
         List<AuthorResponse> authors = authorRepository.findByArticleId(id);
@@ -52,15 +56,6 @@ public class ArticleService {
                 .collect(Collectors.toSet())
                 .stream()
                 .toList();
-
-        if (!isAdminRequest) {
-            Long count = article.getReadCount();
-            if (ObjectUtils.isEmpty(count)) {
-                count = 0L;
-            }
-            article.setReadCount(count + 1);
-            articleRepository.save(article);
-        }
 
         ArticleResponse articleResponse = articleMapper.toResponse(article);
         articleResponse.setAuthors(authors);
@@ -179,4 +174,8 @@ public class ArticleService {
 
     }
 
+    @Transactional
+    public void incrementReadCount(Integer id) {
+        articleRepository.incrementReadCount(id);
+    }
 }

@@ -7,8 +7,6 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
-@ToString(exclude = {"categories"},doNotUseGetters = true)
-@EqualsAndHashCode(exclude = {"categories"},doNotUseGetters = true)
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
