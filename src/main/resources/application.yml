@@ -17,6 +17,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: esm
     show-sql: true
     generate-ddl: true
     open-in-view: false
