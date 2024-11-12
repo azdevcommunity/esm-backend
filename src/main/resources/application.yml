@@ -3,14 +3,14 @@ spring:
     type: caffeine
     caffeine:
       spec: maximumSize=1000, expireAfterWrite=10m
-  datasource:
-    url: jdbc:postgresql://ep-floral-snow-a4msacjt-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require
-    username: default
-    password: 0RNlqZuUGC2b
-    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5434/esmdb
-#    username: postgres
-#    password: 123456789
+#  datasource:
+#    url: jdbc:postgresql://ep-floral-snow-a4msacjt-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require
+#    username: default
+#    password: 0RNlqZuUGC2b
+#    driver-class-name: org.postgresql.Driver
+    url: ${ESM_DB_URL:jdbc:postgresql://localhost:5434/esmdb}
+    username: ${ESM_DB_USERNAME:postgres}
+    password: ${ESM_DB_PASSWORD:123456789}
   jpa:
     hibernate:
       ddl-auto: none
