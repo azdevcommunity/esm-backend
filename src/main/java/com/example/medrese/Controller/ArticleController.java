@@ -2,6 +2,7 @@ package com.example.medrese.Controller;
 
 import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
+import com.example.medrese.DTO.Response.ArticleIdProjection;
 import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleResponse;
 import com.example.medrese.Model.Article;
@@ -34,8 +35,8 @@ public class ArticleController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ArticleProjection>> getAllArticles() {
-        List<ArticleProjection> articles = articleService.getAllArticles();
+    public ResponseEntity<List<ArticleIdProjection>> getAllArticles() {
+        List<ArticleIdProjection> articles = articleService.getAllArticles();
         return ResponseEntity.ok(articles);
     }
 

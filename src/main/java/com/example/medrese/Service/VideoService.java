@@ -122,7 +122,7 @@ public class VideoService {
 
 
     @Cacheable(value = "videosByPlaylistId", key = "#playlistId")
-    public ResponseEntity<List<VideoResponse>> getByPlaylistId(String playlistId) {
+    public List<VideoResponse> getByPlaylistId(String playlistId) {
 
         List<Video> videos = videoRepository.findAllByPlaylistIdOrderByPublishedAtDesc(playlistId);
         System.out.println(videos);
@@ -131,7 +131,7 @@ public class VideoService {
                 .map(videoMapper::toResponse)
                 .toList();
 
-        return ResponseEntity.ok(responseVideos);
+        return responseVideos;
     }
 
 
@@ -186,7 +186,7 @@ public class VideoService {
             throw new IllegalArgumentException("Invalid maxResult value. maxResult cannot be zero or negative");
 
         }
-        List<VideoResponse> totalVideoList = getByPlaylistId(playListId).getBody();
+        List<VideoResponse> totalVideoList = getByPlaylistId(playListId);
         int totalVideo = totalVideoList != null ? totalVideoList.size() : 0;
         if (totalVideo == 0) {
             throw new PlaylistNotFoundException("Videos not found for given playlist id");
@@ -396,7 +396,7 @@ public class VideoService {
                     .setType("video")
                     .setMaxResults(50L)
                     .setKey(ConnectYoutubeApi.DEVELOPER_KEY) // API Key ekledik
-                    .setVideoDuration("short")
+//                    .setVideoDuration("short")
                     .setPageToken(nextPageToken);
 
             SearchListResponse searchResponse = searchRequest.execute();

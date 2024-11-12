@@ -34,7 +34,7 @@ public class VideoController {
 
     @GetMapping(params = "playlistId")
     public ResponseEntity<List<VideoResponse>> getByPlaylistId(@RequestParam("playlistId") String playlistId) {
-        return videoService.getByPlaylistId(playlistId);
+        return ResponseEntity.ok(videoService.getByPlaylistId(playlistId));
     }
 
 //    @PostMapping

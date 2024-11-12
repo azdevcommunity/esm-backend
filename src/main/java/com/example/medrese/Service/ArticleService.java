@@ -2,10 +2,7 @@ package com.example.medrese.Service;
 
 import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
-import com.example.medrese.DTO.Response.ArticleProjection;
-import com.example.medrese.DTO.Response.ArticleResponse;
-import com.example.medrese.DTO.Response.AuthorResponse;
-import com.example.medrese.DTO.Response.PopularArticleProjection;
+import com.example.medrese.DTO.Response.*;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.ArticleCategory;
 import com.example.medrese.Model.AuthorArticle;
@@ -44,7 +41,7 @@ public class ArticleService {
         return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);
     }
 
-    public List<ArticleProjection> getAllArticles() {
+    public List<ArticleIdProjection> getAllArticles() {
         return articleRepository.findAllArticlesWithAuthorsAndCategories();
     }
 

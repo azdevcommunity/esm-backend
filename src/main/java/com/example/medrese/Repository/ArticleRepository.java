@@ -1,5 +1,6 @@
 package com.example.medrese.Repository;
 
+import com.example.medrese.DTO.Response.ArticleIdProjection;
 import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.PopularArticleProjection;
 import com.example.medrese.Model.Article;
@@ -60,20 +61,16 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     List<PopularArticleProjection> findTopArticles(Integer limit);
 
 
-    @Query(value = "SELECT a.id AS id, a.title AS title, a.image AS image, " +
-            "STRING_AGG(au.name, ', ') AS authors, " +
-            "STRING_AGG(c.name, ', ') AS categories " +
-            "FROM articles a " +
-            "LEFT JOIN author_articles aa ON a.id = aa.article_id " +
-            "LEFT JOIN authors au ON aa.author_id = au.id " +
-            "LEFT JOIN article_categories ac ON a.id = ac.article_id " +
-            "LEFT JOIN categories c ON ac.category_id = c.id " +
-            "GROUP BY a.id " +
-            "ORDER BY a.published_at DESC",
+    @Query(value = """
+            SELECT a.id AS id
+                    FROM articles a 
+            """
+            ,
             nativeQuery = true)
-    List<ArticleProjection> findAllArticlesWithAuthorsAndCategories();
+    List<ArticleIdProjection> findAllArticlesWithAuthorsAndCategories();
 
 
     @Modifying
     @Query("UPDATE Article a SET a.readCount = a.readCount + 1 WHERE a.id = :id")
-    void incrementReadCount(@Param("id") Integer id);}
+    void incrementReadCount(@Param("id") Integer id);
+}
