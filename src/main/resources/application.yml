@@ -33,7 +33,7 @@ spring:
 server:
   error:
     path: /error
-  port: ${ESM_PORT:8088}
+  port: ${PORT:8088}
 
 youtube:
   channel-id: UC1B8clCxtmb-bzCDdxmVPDA
