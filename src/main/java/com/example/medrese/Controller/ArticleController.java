@@ -1,6 +1,7 @@
 package com.example.medrese.Controller;
 
 import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
+import com.example.medrese.DTO.Request.Update.DeleteArticles;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleIdProjection;
 import com.example.medrese.DTO.Response.ArticleProjection;
@@ -75,6 +76,12 @@ public class ArticleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Integer id) {
         articleService.deleteArticle(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteArticle(@RequestBody DeleteArticles request) {
+        articleService.deleteArticles(request);
         return ResponseEntity.noContent().build();
     }
 }

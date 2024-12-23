@@ -1,6 +1,7 @@
 package com.example.medrese.Service;
 
 import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
+import com.example.medrese.DTO.Request.Update.DeleteArticles;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.*;
 import com.example.medrese.Model.Article;
@@ -11,6 +12,7 @@ import com.example.medrese.mapper.ArticleMapper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.junit.runner.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -163,6 +165,12 @@ public class ArticleService {
 
         fileService.deleteFile(article.getImage());
 
+    }
+
+    public void deleteArticles(DeleteArticles request) {
+        for (Integer id : request.getIds()) {
+            deleteArticle(id);
+        }
     }
 
 
