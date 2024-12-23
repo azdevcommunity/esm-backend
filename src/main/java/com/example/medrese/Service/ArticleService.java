@@ -168,6 +168,7 @@ public class ArticleService {
 
     }
 
+    @Transactional
     public void deleteArticles(DeleteArticles request) {
         for (Integer id : request.getIds()) {
             deleteArticle(id);
