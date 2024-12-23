@@ -154,6 +154,7 @@ public class ArticleService {
         return article;
     }
 
+    @Transactional
     public void deleteArticle(Integer id) {
 
         Article article = articleRepository.findById(id)
