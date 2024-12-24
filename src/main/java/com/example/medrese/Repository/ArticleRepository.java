@@ -43,7 +43,7 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             "LEFT JOIN authors au ON aa.author_id = au.id " +
             "LEFT JOIN article_categories ac ON a.id = ac.article_id " +
             "LEFT JOIN categories c ON ac.category_id = c.id " +
-            "WHERE c.id = :categoryId " +
+            "WHERE c.id = :categoryId or c.parent_id = :category" +
             "GROUP BY a.id " +
             "ORDER BY a.published_at DESC",
             countQuery = "SELECT COUNT(*) FROM articles a " +

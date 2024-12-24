@@ -47,7 +47,7 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    @CacheEvict(value = CacheKeys.ALL_CATEGORIES)
+    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, condition = "#result != null")
     public CategoryResponse createCategory(CreateCategoryDTO createCategoryDTO) {
         if (categoryRepository.existsByName(createCategoryDTO.getName())) {
             throw new RuntimeException("Same category name exixts");
@@ -64,7 +64,7 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    @CacheEvict(value = CacheKeys.ALL_CATEGORIES)
+    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, condition = "#result != null")
     public CategoryResponse updateCategory(Integer id, UpdateCategory categoryDetails) {
         Category category = categoryRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Category not found with id " + id));
@@ -74,7 +74,7 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    @CacheEvict(value = CacheKeys.ALL_CATEGORIES)
+    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, condition = "#result != null")
     public void deleteCategory(Integer id) {
         if (!categoryRepository.existsById(id)) {
             throw new RuntimeException("category nor found ");
@@ -94,16 +94,17 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
+    @Cacheable(value = CacheKeys.MENU_ITEMS)
     public List<MenuItemResponse> getCategoryTree() {
         List<Category> categories = categoryRepository.findAll();
 
         List<MenuItemResponse> menuItems = categories.stream()
-                .map(category -> new MenuItemResponse(
-                        category.getId(),
-                        category.getName(),
-                        category.getParentId(),
-                        new ArrayList<>()
-                ))
+                .map(category -> MenuItemResponse.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .parentId(category.getParentId())
+                        .subcategories(new ArrayList<>())
+                        .build())
                 .collect(Collectors.toList());
 
         return buildCategoryTree(menuItems);
