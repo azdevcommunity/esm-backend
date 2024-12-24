@@ -3,6 +3,7 @@ package com.example.medrese.Controller;
 import com.example.medrese.DTO.Request.Create.CreateCategoryDTO;
 import com.example.medrese.DTO.Request.Update.UpdateCategory;
 import com.example.medrese.DTO.Response.CategoryResponse;
+import com.example.medrese.DTO.Response.MenuItemResponse;
 import com.example.medrese.Model.Category;
 import com.example.medrese.Service.CategoryService;
 import jakarta.validation.Valid;
@@ -30,6 +31,11 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Integer id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
+    }
+
+    @GetMapping("/menu")
+    public ResponseEntity<List<MenuItemResponse>> getMenuItems() {
+        return ResponseEntity.ok(categoryService.getCategoryTree());
     }
 
     @PostMapping
