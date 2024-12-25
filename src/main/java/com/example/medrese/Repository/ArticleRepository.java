@@ -35,21 +35,40 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             nativeQuery = true)
     Page<ArticleProjection> findAllArticlesWithAuthorsAndCategories(Pageable pageable);
 
-    @Query(value = "SELECT a.id AS id, a.title AS title, a.image AS image, " +
-            "STRING_AGG(au.name, ', ') AS authors, " +
-            "STRING_AGG(c.name, ', ') AS categories " +
+    @Query(value = "WITH RECURSIVE category_tree AS ( " +
+            "    SELECT id, parent_id " +
+            "    FROM categories " +
+            "    WHERE id = :categoryId " +
+            "    UNION ALL " +
+            "    SELECT c.id, c.parent_id " +
+            "    FROM categories c " +
+            "    INNER JOIN category_tree ct ON c.parent_id = ct.id " +
+            ") " +
+            "SELECT a.id AS id, a.title AS title, a.image AS image, " +
+            "       STRING_AGG(au.name, ', ') AS authors, " +
+            "       STRING_AGG(c.name, ', ') AS categories " +
             "FROM articles a " +
             "LEFT JOIN author_articles aa ON a.id = aa.article_id " +
             "LEFT JOIN authors au ON aa.author_id = au.id " +
             "LEFT JOIN article_categories ac ON a.id = ac.article_id " +
             "LEFT JOIN categories c ON ac.category_id = c.id " +
-            "WHERE c.id = :categoryId or c.parent_id = :categoryId" +
+            "WHERE c.id IN (SELECT id FROM category_tree) " +
             "GROUP BY a.id " +
             "ORDER BY a.published_at DESC",
-            countQuery = "SELECT COUNT(*) FROM articles a " +
+            countQuery = "WITH RECURSIVE category_tree AS ( " +
+                    "    SELECT id, parent_id " +
+                    "    FROM categories " +
+                    "    WHERE id = :categoryId " +
+                    "    UNION ALL " +
+                    "    SELECT c.id, c.parent_id " +
+                    "    FROM categories c " +
+                    "    INNER JOIN category_tree ct ON c.parent_id = ct.id " +
+                    ") " +
+                    "SELECT COUNT(*) " +
+                    "FROM articles a " +
                     "LEFT JOIN article_categories ac ON a.id = ac.article_id " +
                     "LEFT JOIN categories c ON ac.category_id = c.id " +
-                    "WHERE c.id = :categoryId",
+                    "WHERE c.id IN (SELECT id FROM category_tree)",
             nativeQuery = true)
     Page<ArticleProjection> findAllArticlesWithAuthorsAndCategories(Pageable pageable, @Param("categoryId") Long categoryId);
 
