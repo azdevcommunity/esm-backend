@@ -37,7 +37,7 @@ public class CategoryService {
     QuestionCategoryRepository questionCategoryRepository;
     BookCategoryRepository bookCategoryRepository;
 
-    @CachePut(value = CacheKeys.ALL_CATEGORIES)
+//    @CachePut(value = CacheKeys.ALL_CATEGORIES)
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
@@ -48,7 +48,7 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, allEntries = true)
+//    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, allEntries = true)
     public CategoryResponse createCategory(CreateCategoryDTO createCategoryDTO) {
         if (categoryRepository.existsByName(createCategoryDTO.getName())) {
             throw new RuntimeException("Same category name exixts");
@@ -65,7 +65,7 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, allEntries = true)
+//    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, allEntries = true)
     public CategoryResponse updateCategory(Integer id, UpdateCategory categoryDetails) {
         Category category = categoryRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Category not found with id " + id));
@@ -75,7 +75,7 @@ public class CategoryService {
         return categoryMapper.toResponse(category);
     }
 
-    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, allEntries = true)
+//    @CacheEvict(value = {CacheKeys.ALL_CATEGORIES, CacheKeys.MENU_ITEMS}, allEntries = true)
     public void deleteCategory(Integer id) {
         if (!categoryRepository.existsById(id)) {
             throw new RuntimeException("category nor found ");
@@ -95,7 +95,7 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    @CachePut(value = CacheKeys.MENU_ITEMS)
+//    @CachePut(value = CacheKeys.MENU_ITEMS)
     public List<MenuItemResponse> getCategoryTree() {
         List<Category> categories = categoryRepository.findAll();
 
