@@ -25,7 +25,7 @@ public class SearchService {
 
     public SearchResponse search(Long categoryId) {
         List<ArticleProjection> articleProjections = articleService.getAllArticles(
-                Pageable.ofSize(10).withPage(0), categoryId
+                Pageable.ofSize(4).withPage(0), categoryId
         ).get().toList();
 
 
