@@ -72,6 +72,61 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             nativeQuery = true)
     Page<ArticleProjection> findAllArticlesWithAuthorsAndCategories(Pageable pageable, @Param("categoryId") Long categoryId);
 
+
+    @Query(value = """
+    SELECT 
+       a.id AS id,
+       a.title AS title,
+       a.image AS image,
+       STRING_AGG(DISTINCT au.name, ', ') AS authors,
+       STRING_AGG(DISTINCT c.name, ', ') AS categories
+    FROM articles a
+    LEFT JOIN author_articles aa ON a.id = aa.article_id
+    LEFT JOIN authors au ON aa.author_id = au.id
+    LEFT JOIN article_categories ac ON a.id = ac.article_id
+    LEFT JOIN categories c ON ac.category_id = c.id
+    WHERE
+       (
+         -- If search is empty, show all
+         (:search IS NULL OR :search = '')
+         OR
+         -- Otherwise, match title/content/authors/categories
+         (
+           a.title ILIKE CONCAT('%', :search, '%')
+           OR a.content ILIKE CONCAT('%', :search, '%')
+           OR au.name ILIKE CONCAT('%', :search, '%')
+           OR c.name ILIKE CONCAT('%', :search, '%')
+         )
+       )
+    GROUP BY a.id
+    ORDER BY a.published_at DESC
+    """,
+            countQuery = """
+    SELECT 
+       COUNT(DISTINCT a.id)
+    FROM articles a
+    LEFT JOIN author_articles aa ON a.id = aa.article_id
+    LEFT JOIN authors au ON aa.author_id = au.id
+    LEFT JOIN article_categories ac ON a.id = ac.article_id
+    LEFT JOIN categories c ON ac.category_id = c.id
+    WHERE
+       (
+         (:search IS NULL OR :search = '')
+         OR
+         (
+           a.title ILIKE CONCAT('%', :search, '%')
+           OR a.content ILIKE CONCAT('%', :search, '%')
+           OR au.name ILIKE CONCAT('%', :search, '%')
+           OR c.name ILIKE CONCAT('%', :search, '%')
+         )
+       )
+    """,
+            nativeQuery = true)
+    Page<ArticleProjection> findAllArticlesWithAuthorsAndCategoriesBySearch(
+            @Param("search") String search,
+            Pageable pageable
+    );
+
     @Query(value = "SELECT a.id AS id, a.title AS title, a.image AS image, a.published_at AS publishedAt " +
             "FROM articles a " +
             "ORDER BY a.read_count DESC " +

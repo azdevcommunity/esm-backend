@@ -413,8 +413,8 @@ public class VideoService {
         return allShortVideos;
     }
 
-    public List<VideoResponse> findRandomVideos(int limit){
-        return videoRepository.findRandomVideos(limit)
+    public List<VideoResponse> searchVideos(int limit, String search){
+        return videoRepository.searchVideos(limit, search)
                 .stream()
                 .map(video->VideoResponse.builder()
                         .title(video.getTitle())

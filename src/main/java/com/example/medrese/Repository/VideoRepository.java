@@ -18,5 +18,25 @@ public interface VideoRepository extends JpaRepository<Video, String> {
     List<Video> findAllByPlaylistIdOrderByPublishedAtDesc(String playlistId);
 
     @Query(value = "SELECT * FROM videos ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
-    List<Video> findRandomVideos(@Param("limit") int limit);
+    List<Video> searchVideos(@Param("limit") int limit);
+
+    @Query(value = """
+    SELECT *
+    FROM videos
+    WHERE 
+      CASE
+        WHEN :search IS NULL OR :search = '' 
+          THEN 1  -- if search is null/empty, we don't filter anything
+        WHEN (playlist_id ILIKE CONCAT('%', :search, '%')
+              OR title ILIKE CONCAT('%', :search, '%'))
+          THEN 1  -- if search is not null/empty, check playlist_id/title
+        ELSE 0
+      END = 1
+    ORDER BY RANDOM()
+    LIMIT :limit
+    """, nativeQuery = true)
+    List<Video> rchVideos(
+            @Param("search") String search,
+            @Param("limit") int limit
+    );
 }

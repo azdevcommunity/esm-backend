@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.junit.runner.Request;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -184,5 +186,15 @@ public class ArticleService {
     @Transactional
     public void incrementReadCount(Integer id) {
         articleRepository.incrementReadCount(id);
+    }
+
+    public Page<ArticleProjection> searchArticles(int limit, Long categoryId, String search) {
+        Pageable pageable = Pageable.ofSize(limit).withPage(0);
+        if(Objects.nonNull(categoryId)){
+            return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);
+        }else{
+            return articleRepository.findAllArticlesWithAuthorsAndCategoriesBySearch(search,pageable);
+        }
+
     }
 }

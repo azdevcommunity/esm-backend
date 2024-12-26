@@ -23,13 +23,12 @@ public class SearchService {
     ArticleService articleService;
     VideoService videoService;
 
-    public SearchResponse search(Long categoryId) {
-        List<ArticleProjection> articleProjections = articleService.getAllArticles(
-                Pageable.ofSize(4).withPage(0), categoryId
+    public SearchResponse search(Long categoryId, String search) {
+        List<ArticleProjection> articleProjections = articleService.searchArticles(
+                4,categoryId,search
         ).get().toList();
 
-
-        List<VideoResponse> videos = videoService.findRandomVideos();
+        List<VideoResponse> videos = videoService.searchVideos(4, search);
 
         List<BookResponse> books = bookService.getAllBooks();
 
