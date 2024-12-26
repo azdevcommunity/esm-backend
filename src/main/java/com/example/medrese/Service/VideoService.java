@@ -413,4 +413,18 @@ public class VideoService {
         return allShortVideos;
     }
 
+    public List<VideoResponse> findRandomVideos(){
+        return videoRepository.findRandomVideos()
+                .stream()
+                .map(video->VideoResponse.builder()
+                        .title(video.getTitle())
+                        .videoId(video.getVideoId())
+                        .publishedAt(video.getPublishedAt())
+                        .thumbnail(video.getThumbnail())
+                        .title(video.getTitle())
+                        .playlistId(video.getPlaylistId())
+                        .build())
+                .toList();
+    }
+
 }

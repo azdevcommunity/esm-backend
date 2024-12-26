@@ -4,6 +4,7 @@ import com.example.medrese.Model.Video;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,4 +15,7 @@ public interface VideoRepository extends JpaRepository<Video, String> {
     List<Video> findAllByPlaylistId(String playlistId, Sort sort);
     Long countVideosByPlaylistId(String playlistId);
     List<Video> findAllByPlaylistIdOrderByPublishedAtDesc(String playlistId);
+
+    @Query(value = "SELECT * FROM videos ORDER BY RANDOM() LIMIT 10", nativeQuery = true)
+    List<Video> findRandomVideos();
 }

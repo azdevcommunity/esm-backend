@@ -13,4 +13,5 @@ import java.util.List;
 public class SearchResponse {
     List<ArticleProjection> articles;
     List<BookResponse> books;
+    List<VideoResponse> videos;
 }
