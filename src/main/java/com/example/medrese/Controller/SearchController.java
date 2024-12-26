@@ -16,9 +16,11 @@ public class SearchController {
 
     private final SearchService searchService;
 
-
     @GetMapping
-    public ResponseEntity<SearchResponse> search(@RequestParam Long categoryId, @RequestParam String search) {
+    public ResponseEntity<SearchResponse> search(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String search
+    ) {
         return ResponseEntity.ok(searchService.search(categoryId, search));
     }
 }

@@ -19,35 +19,34 @@
 #EXPOSE 8082
 #
 #CMD ["sh", "-c", "java -jar app.jar "]
+
+
+# --- Stage 1: Build ---
 FROM gradle:8.4.0-jdk17 as build
 
 WORKDIR /app
 
-# Step 1: Copy only the files necessary for dependency resolution
-COPY build.gradle settings.gradle gradlew* /app/
+# Copy only Gradle wrapper and build files first
+COPY build.gradle settings.gradle gradlew gradlew.bat /app/
 
-# Step 2: Download dependencies
-RUN gradle dependencies --no-daemon
+# This step will force Gradle to download and cache dependencies
+# (You can run something less than a full build, e.g. `gradle --version`
+#  or `gradle dependencies`, but a build with an empty src folder won't do harm.)
+RUN gradle build --no-daemon || true
 
-# Step 3: Copy the remaining source files
+# Now copy the entire source code
 COPY src /app/src
 
-# Step 4: Build the application
-RUN gradle build --no-daemon && ls -l /app/build/libs
+# Final build step (this reuses cached dependencies if only src changes)
+RUN gradle build --no-daemon
 
-# Step 5: Create the runtime image
+# --- Stage 2: Runtime ---
 FROM openjdk:17-jdk
 
 WORKDIR /app
-
-# Step 6: Copy the built JAR from the build stage
 COPY --from=build /app/build/libs/medrese-0.0.1.jar /app/app.jar
 
-# Define volume for uploads
 VOLUME /app/uploads
-
-# Expose the application port
 EXPOSE 8082
 
-# Define the default command
 CMD ["sh", "-c", "java -jar app.jar"]
