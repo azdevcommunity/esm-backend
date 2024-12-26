@@ -35,7 +35,7 @@ public interface VideoRepository extends JpaRepository<Video, String> {
     ORDER BY RANDOM()
     LIMIT :limit
     """, nativeQuery = true)
-    List<Video> rchVideos(
+    List<Video> searchVideos(
             @Param("search") String search,
             @Param("limit") int limit
     );

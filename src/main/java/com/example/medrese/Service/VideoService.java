@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.medrese.Service.ConnectYoutubeApi.youtubeService;
 
@@ -414,8 +415,13 @@ public class VideoService {
     }
 
     public List<VideoResponse> searchVideos(int limit, String search){
-        return videoRepository.searchVideos(limit, search)
-                .stream()
+        List<Video> videos;
+        if(Objects.nonNull(search)){
+            videos = videoRepository.searchVideos(search, limit);
+        }else {
+            videos = videoRepository.searchVideos(limit);
+        }
+        return videos.stream()
                 .map(video->VideoResponse.builder()
                         .title(video.getTitle())
                         .videoId(video.getVideoId())
