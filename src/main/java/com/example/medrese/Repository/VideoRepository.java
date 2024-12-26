@@ -24,14 +24,9 @@ public interface VideoRepository extends JpaRepository<Video, String> {
     SELECT *
     FROM videos
     WHERE 
-      CASE
-        WHEN :search IS NULL OR :search = '' 
-          THEN 1  -- if search is null/empty, we don't filter anything
-        WHEN (playlist_id ILIKE CONCAT('%', :search, '%')
-              OR title ILIKE CONCAT('%', :search, '%'))
-          THEN 1  -- if search is not null/empty, check playlist_id/title
-        ELSE 0
-      END = 1
+       (:search IS NULL OR :search = '')
+       OR (playlist_id ILIKE CONCAT('%', :search, '%')
+           OR title ILIKE CONCAT('%', :search, '%'))
     ORDER BY RANDOM()
     LIMIT :limit
     """, nativeQuery = true)
