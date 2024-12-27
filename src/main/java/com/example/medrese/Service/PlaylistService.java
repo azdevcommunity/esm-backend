@@ -76,6 +76,11 @@ public class PlaylistService  {
             for (com.google.api.services.youtube.model.Playlist playlist : playlistsFromYT) {
                 if (playlistRepository.existsByPlaylistId(playlist.getId())) {
                     log.debug("Playlist already exists in the database: {}", playlist.getId());
+                    Playlist exists = playlistRepository.findById(playlist.getId()).get();
+                    exists.setThumbnail(playlist.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
+                            playlist.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
+                            playlist.getSnippet().getThumbnails().getHigh().getUrl());
+                    playlistRepository.save(exists);
                     existingPlaylists++;
                     continue;
                 }
