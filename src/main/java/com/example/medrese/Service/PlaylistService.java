@@ -33,7 +33,7 @@ public class PlaylistService  {
 
     @Cacheable(value = "allPlaylists")
     public List<Playlist> getAllPlaylists() {
-        return playlistRepository.findAllOrderByVideoCountDesc();
+        return playlistRepository.findAllOrderByLatestVideo();
     }
 
     public Playlist getPlaylistById(String playlistId) {
@@ -75,12 +75,15 @@ public class PlaylistService  {
 
             for (com.google.api.services.youtube.model.Playlist playlist : playlistsFromYT) {
                 if (playlistRepository.existsByPlaylistId(playlist.getId())) {
-                    log.debug("Playlist already exists in the database: {}", playlist.getId());
-                    Playlist exists = playlistRepository.findById(playlist.getId()).get();
-                    exists.setThumbnail(playlist.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
-                            playlist.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
-                            playlist.getSnippet().getThumbnails().getHigh().getUrl());
-                    playlistRepository.save(exists);
+                    log.info("Playlist already exists in the database: {}", playlist.getId());
+                   playlistRepository.findById(playlist.getId()).ifPresent(exists->{
+                        String newThumbnail = playlist.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
+                                playlist.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
+                                playlist.getSnippet().getThumbnails().getHigh().getUrl();
+                            exists.setThumbnail(newThumbnail);
+                            playlistRepository.save(exists);
+                    });
+
                     existingPlaylists++;
                     continue;
                 }
@@ -97,7 +100,7 @@ public class PlaylistService  {
                 pl.setVideoCount(videoRepository.countVideosByPlaylistId(playlist.getId()));
 
                 newPlaylists.add(pl);
-                log.debug("New playlist added to the list: {}", pl.getPlaylistId());
+                log.info("New playlist added to the list: {}", pl.getPlaylistId());
             }
 
             if (!newPlaylists.isEmpty()) {
