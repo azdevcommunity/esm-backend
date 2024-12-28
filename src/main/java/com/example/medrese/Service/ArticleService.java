@@ -126,7 +126,8 @@ public class ArticleService {
         article = articleRepository.save(article);
 
         if (!ObjectUtils.isEmpty(articleDetails.getCategories())) {
-            articleCategoryRepository.deleteByArticleIdInAndArticleId(articleDetails.getCategories().stream().toList(), article.getId());
+//            articleCategoryRepository.deleteByArticleIdInAndArticleId(articleDetails.getCategories().stream().toList(), article.getId());
+            articleCategoryRepository.deleteByArticleId(article.getId());
             for (Integer category : articleDetails.getCategories()) {
                 if (categoryRepository.existsById(category)) {
                     ArticleCategory articleCategory = ArticleCategory.builder()
