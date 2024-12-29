@@ -5,8 +5,11 @@ import com.example.medrese.DTO.Request.Create.CreateQuestionDTO;
 import com.example.medrese.DTO.Response.QuestionResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Model.QuestionCategory;
+import com.example.medrese.Model.QuestionTag;
 import com.example.medrese.Repository.QuestionCategoryRepository;
 import com.example.medrese.Repository.QuestionRepository;
+import com.example.medrese.Repository.QuestionTagRepository;
+import com.example.medrese.Repository.TagRepository;
 import com.example.medrese.mapper.QuestionMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -24,23 +28,33 @@ import java.util.Optional;
 
 public class QuestionService {
 
-     QuestionRepository questionRepository;
-     QuestionMapper questionMapper;
-     QuestionCategoryRepository questionCategoryRepository;
+    QuestionRepository questionRepository;
+    QuestionMapper questionMapper;
+    QuestionCategoryRepository questionCategoryRepository;
+    TagRepository tagRepository;
+    QuestionTagRepository questionTagRepository;
+    AuthorService authorService;
 
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
 
     public Question getQuestionById(Integer id) {
-        return questionRepository.findById(id).orElseThrow(()-> new RuntimeException("question not found"));
+        return questionRepository.findById(id).orElseThrow(() -> new RuntimeException("question not found"));
     }
 
     @Transactional
     public QuestionResponse createQuestion(CreateQuestionDTO createQuestionDTO) {
+        if(Objects.nonNull(createQuestionDTO.getAuthor())) {
+            authorService.getAuthorById(createQuestionDTO.getAuthor());
+        }
+
         Question question = questionMapper.toEntity(createQuestionDTO);
         question = questionRepository.save(question);
         for (Integer category : createQuestionDTO.getCategories()) {
+            if (!questionRepository.existsById(category)) {
+                continue;
+            }
             QuestionCategory questionCategory = QuestionCategory.builder()
                     .categoryId(category)
                     .questionId(question.getId())
@@ -48,7 +62,18 @@ public class QuestionService {
             questionCategoryRepository.save(questionCategory);
         }
 
-        return  questionMapper.toResponse(question);
+        for (Integer category : createQuestionDTO.getTags()) {
+            if (!tagRepository.existsById(category)) {
+                continue;
+            }
+            QuestionTag questionTag = QuestionTag.builder()
+                    .tagId(category)
+                    .questionId(question.getId())
+                    .build();
+            questionTagRepository.save(questionTag);
+        }
+
+        return questionMapper.toResponse(question);
     }
 
     public Question updateQuestion(Integer id, Question questionDetails) {
@@ -60,11 +85,12 @@ public class QuestionService {
     }
 
     public void deleteQuestion(Integer id) {
-        if (!questionRepository.existsById(id)){
+        if (!questionRepository.existsById(id)) {
             throw new RuntimeException("does not exist");
         }
-       questionCategoryRepository.deleteByQuestionId(id);
 
+        questionCategoryRepository.deleteByQuestionId(id);
+        questionTagRepository.deleteByQuestionId(id);
         questionRepository.deleteById(id);
     }
 }

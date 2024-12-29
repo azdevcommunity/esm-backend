@@ -1,5 +1,6 @@
 package com.example.medrese.DTO.Request.Create;
 
+import com.example.medrese.Model.AnswerType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,5 +20,12 @@ public class CreateQuestionDTO {
     String answer;
 
     Set<Integer> categories;
+
+    Set<Integer> tags;
+
+    @NotBlank(message = "Answer type is required")
+    AnswerType answerType;
+
+    Integer author;
 
 }

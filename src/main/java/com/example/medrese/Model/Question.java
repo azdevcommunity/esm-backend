@@ -27,5 +27,10 @@ public class Question  {
     @Column(name = "answer")
     String answer;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "answer_type", nullable = false, length = 10)
+    AnswerType answerType;
 
+    @Column(name = "author_id")
+    Integer authorId;
 }
