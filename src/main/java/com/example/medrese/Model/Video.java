@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -17,11 +20,15 @@ import lombok.experimental.FieldDefaults;
 public class Video  {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id")
+    private Integer id;
+
     @Column(name = "video_id")
     String videoId;
 
     @Column(name = "published_at")
-    String publishedAt;
+    OffsetDateTime publishedAt;
 
     @Column(name = "thumbnail")
     String thumbnail;
@@ -30,7 +37,7 @@ public class Video  {
     @Column(name = "title")
     String title;
 
-    @JoinColumn(name = "playlist_id")
-    String playlistId;
+//    @JoinColumn(name = "playlist_id")
+//    String playlistId;
 
 }

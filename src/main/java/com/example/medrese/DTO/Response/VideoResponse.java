@@ -2,6 +2,8 @@ package com.example.medrese.DTO.Response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.OffsetDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -9,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VideoResponse {
     String videoId;
-    String publishedAt;
+    OffsetDateTime publishedAt;
     String thumbnail;
     String title;
     String playlistId;

@@ -6,13 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.OffsetDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlaylistResponse {
     String playlistId;
-    String publishedAt;
+    OffsetDateTime publishedAt;
     String thumbnail;
     String title;
     int videoCount;

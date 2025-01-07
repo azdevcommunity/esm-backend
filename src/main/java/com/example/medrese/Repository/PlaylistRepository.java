@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface PlaylistRepository extends JpaRepository<Playlist, String> {
+public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
     boolean existsByPlaylistId(String id);
 
 
@@ -21,9 +22,16 @@ public interface PlaylistRepository extends JpaRepository<Playlist, String> {
 //    List<Playlist> findAllOrderByVideoCountDesc();
 
     @Query("""
-        SELECT p FROM Playlist p
-        WHERE p.videoCount > 0
-        ORDER BY p.publishedAt DESC
-        """)
+    SELECT p
+    FROM Playlist p
+    JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
+    JOIN Video v ON pv.videoId = v.videoId
+    WHERE v.publishedAt IS NOT NULL
+    GROUP BY p
+    HAVING COUNT(v) > 0
+    ORDER BY MAX(v.publishedAt) DESC
+    """)
     List<Playlist> findAllOrderByLatestVideo();
+
+    Optional<Playlist> findByPlaylistId(String id);
 }

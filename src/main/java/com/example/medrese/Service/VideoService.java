@@ -76,28 +76,20 @@ public class VideoService {
 
     public List<VideoResponse> getAll() {
 
-        List<Video> videos = videoRepository.findAll();
-        List<VideoResponse> responseVideos = videos.stream()
-                .map(v -> VideoResponse.builder().build()).toList();
+//        List<Video> videos = videoRepository.findAll();
+//        List<VideoResponse> responseVideos = videos.stream()
+//                .map(v -> VideoResponse.builder().build()).toList();
 
-        return responseVideos;
+        return videoRepository.findAllOrderByPublishedAt();
 
     }
-
-    public VideoResponse getById(String id) {
-
-        Video video = videoRepository.findById(id)
-                .orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + id));
-        return VideoResponse.builder().build();
-    }
-
 
     public ResponseEntity<VideoResponse> delete(String id) {
 
-        Video video = videoRepository.findById(id)
+        Video video = videoRepository.findByVideoId(id)
                 .orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + id));
 
-        videoRepository.deleteById(id);
+        videoRepository.deleteByVideoId(id);
 
         VideoResponse videoResponse = VideoResponse.builder().build();
 
@@ -107,7 +99,7 @@ public class VideoService {
 
     public ResponseEntity<UpdateVideo> update(UpdateVideo video, String id) {
 
-        Video findedVideo = videoRepository.findById(id)
+        Video findedVideo = videoRepository.findByVideoId(id)
                 .orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + id));
 
         CheckIds.checkForPlayListOrVideo(findedVideo.getVideoId(), id);
@@ -124,9 +116,10 @@ public class VideoService {
 
     @Cacheable(value = "videosByPlaylistId", key = "#playlistId")
     public List<VideoResponse> getByPlaylistId(String playlistId) {
-        return videoRepository.findAllByPlaylistIdOrderByPublishedAtDesc(playlistId).stream()
-                .map(videoMapper::toResponse)
-                .toList();
+        return videoRepository.findAllByPlaylistIdOrderByPublishedAtDesc(playlistId);
+//                .stream()
+//                .map(videoMapper::toResponse)
+//                .toList();
     }
 
 
@@ -169,9 +162,9 @@ public class VideoService {
 
     public ResponseEntity<List<VideoResponse>> getSortedPlayListVideosBySpecificField(String fieldName, String playListId, String sortOrder) {
 //change
-        List<Video> videos = videoRepository.findAllByPlaylistId(playListId, Sort.by(Sort.Direction.fromString(sortOrder), fieldName));
-        List<VideoResponse> responseVideos = videos.stream()
-                .map(v -> VideoResponse.builder().build()).toList();
+        List<VideoResponse> responseVideos = videoRepository.findAllByPlaylistId(playListId, Sort.by(Sort.Direction.fromString(sortOrder), fieldName));
+//        List<VideoResponse> responseVideos = videos.stream()
+//                .map(v -> VideoResponse.builder().build()).toList();
 
         return ResponseEntity.ok(responseVideos);
     }
@@ -182,9 +175,10 @@ public class VideoService {
 
         }
 
-        List<VideoResponse> totalVideoList = videoRepository.findAllByPlaylistIdOrderByPublishedAtDesc(playListId).stream()
-                .map(videoMapper::toResponse)
-                .toList();
+        List<VideoResponse> totalVideoList = videoRepository.findAllByPlaylistIdOrderByPublishedAtDesc(playListId);
+//                .stream()
+//                .map(videoMapper::toResponse)
+//                .toList();
 
         int totalVideo = totalVideoList != null ? totalVideoList.size() : 0;
         if (totalVideo == 0) {
@@ -291,146 +285,147 @@ public class VideoService {
     /**
      * YouTube'dan video verilerini alır ve veritabanını günceller.
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void addOrUpdateVideos() {
-        log.info("Started fetching videos from YouTube API.");
-
-        try {
-            List<PlaylistItem> playlistItems = getAllVideosFromYouTubeAPI();
-
-
-            log.info("Found {} videos from YouTube API.", playlistItems.size());
-            List<Video> videos = new ArrayList<>();
-            int existingVideos = 0;
-
-            for (PlaylistItem playlistItem : playlistItems) {
-                if (videoRepository.existsById(playlistItem.getSnippet().getResourceId().getVideoId())) {
-                    log.info("Video already exists in the database: {}", playlistItem.getSnippet().getResourceId().getVideoId());
-                    existingVideos++;
-                    continue;
-                }
-
-                Video video = new Video();
-                video.setTitle(playlistItem.getSnippet().getTitle());
-                video.setPublishedAt(playlistItem.getSnippet().getPublishedAt().toString());
-                video.setPlaylistId(playlistItem.getSnippet().getPlaylistId());
-                video.setVideoId(playlistItem.getSnippet().getResourceId().getVideoId());
-                video.setThumbnail(
-                        playlistItem.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
-                                playlistItem.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
-                                playlistItem.getSnippet().getThumbnails().getHigh().getUrl()
-                );
-
-                videos.add(video);
-                log.info("New video added to the list: {}", video.getVideoId());
-            }
-
-            if (!videos.isEmpty()) {
-                videoRepository.saveAll(videos);
-                log.info("Successfully saved {} new videos to the database.", videos.size());
-            } else {
-                log.info("No new videos to save. {} videos already existed.", existingVideos);
-            }
-
-        } catch (IOException e) {
-            log.error("Error occurred while fetching and updating videos: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to update videos", e);
-        }
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void addOrUpdateSearch() {
-        try {
-            List<Video> videos = new ArrayList<>();
-            List<SearchResult> searchResults = getAllShortVideos();
-            int existingVideos = 0;
-            log.info("Found search {} videos from YouTube API.", searchResults.size());
-
-
-            for (SearchResult searchResult : searchResults) {
-                if (videoRepository.existsById(searchResult.getId().getVideoId())) {
-                    log.info("Video already exists in the database: {}", searchResult.getId().getVideoId());
-                    existingVideos++;
-                    continue;
-                }
-
-                Video video = new Video();
-                video.setTitle(searchResult.getSnippet().getTitle());
-                video.setPublishedAt(searchResult.getSnippet().getPublishedAt().toString());
-                video.setPlaylistId(searchResult.getId().getPlaylistId());
-                video.setVideoId(searchResult.getId().getVideoId());
-                video.setThumbnail(
-                        searchResult.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
-                                searchResult.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
-                                searchResult.getSnippet().getThumbnails().getHigh().getUrl()
-                );
-
-                videos.add(video);
-                log.info("New video added to the list: {}", video.getVideoId());
-            }
-
-
-            if (!videos.isEmpty()) {
-                videoRepository.saveAll(videos);
-                log.info("Successfully saved {} new videos to the database.", videos.size());
-            } else {
-                log.info("No new videos to save. {} videos already existed.", existingVideos);
-            }
-
-        } catch (IOException e) {
-            log.error("Error occurred while fetching and updating videos: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to update videos", e);
-        }
-    }
-
-    public List<SearchResult> getAllShortVideos() throws IOException {
-        String nextPageToken = null;
-        List<SearchResult> allShortVideos = new ArrayList<>();
-
-        do {
-            // API çağrısı
-            YouTube.Search.List searchRequest = youtubeService.search()
-                    .list("snippet")
-                    .setChannelId(ConnectYoutubeApi.CHANNEL_ID)
-                    .setType("video")
-                    .setMaxResults(50L)
-                    .setKey(ConnectYoutubeApi.DEVELOPER_KEY) // API Key ekledik
-//                    .setVideoDuration("short")
-                    .setPageToken(nextPageToken);
-
-            SearchListResponse searchResponse = searchRequest.execute();
-
-            // Gelen videoları listeye ekle
-            List<SearchResult> items = searchResponse.getItems();
-            if (items != null && !items.isEmpty()) {
-                allShortVideos.addAll(items);
-            }
-
-            // Bir sonraki sayfa token'ı
-            nextPageToken = searchResponse.getNextPageToken();
-
-        } while (nextPageToken != null);
-
-        return allShortVideos;
-    }
-
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    public void addOrUpdateVideos() {
+//        log.info("Started fetching videos from YouTube API.");
+//
+//        try {
+//            List<PlaylistItem> playlistItems = getAllVideosFromYouTubeAPI();
+//
+//
+//            log.info("Found {} videos from YouTube API.", playlistItems.size());
+//            List<Video> videos = new ArrayList<>();
+//            int existingVideos = 0;
+//
+//            for (PlaylistItem playlistItem : playlistItems) {
+//                if (videoRepository.existsById(playlistItem.getSnippet().getResourceId().getVideoId())) {
+//                    log.info("Video already exists in the database: {}", playlistItem.getSnippet().getResourceId().getVideoId());
+//                    existingVideos++;
+//                    continue;
+//                }
+//
+//                Video video = new Video();
+//                video.setTitle(playlistItem.getSnippet().getTitle());
+//                video.setPublishedAt(playlistItem.getSnippet().getPublishedAt().toString());
+//                video.setPlaylistId(playlistItem.getSnippet().getPlaylistId());
+//                video.setVideoId(playlistItem.getSnippet().getResourceId().getVideoId());
+//                video.setThumbnail(
+//                        playlistItem.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
+//                                playlistItem.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
+//                                playlistItem.getSnippet().getThumbnails().getHigh().getUrl()
+//                );
+//
+//                videos.add(video);
+//                log.info("New video added to the list: {}", video.getVideoId());
+//            }
+//
+//            if (!videos.isEmpty()) {
+//                videoRepository.saveAll(videos);
+//                log.info("Successfully saved {} new videos to the database.", videos.size());
+//            } else {
+//                log.info("No new videos to save. {} videos already existed.", existingVideos);
+//            }
+//
+//        } catch (IOException e) {
+//            log.error("Error occurred while fetching and updating videos: {}", e.getMessage(), e);
+//            throw new RuntimeException("Failed to update videos", e);
+//        }
+//    }
+//
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    public void addOrUpdateSearch() {
+//        try {
+//            List<Video> videos = new ArrayList<>();
+//            List<SearchResult> searchResults = getAllShortVideos();
+//            int existingVideos = 0;
+//            log.info("Found search {} videos from YouTube API.", searchResults.size());
+//
+//
+//            for (SearchResult searchResult : searchResults) {
+//                if (videoRepository.existsById(searchResult.getId().getVideoId())) {
+//                    log.info("Video already exists in the database: {}", searchResult.getId().getVideoId());
+//                    existingVideos++;
+//                    continue;
+//                }
+//
+//                Video video = new Video();
+//                video.setTitle(searchResult.getSnippet().getTitle());
+//                video.setPublishedAt(searchResult.getSnippet().getPublishedAt().toString());
+//                video.setPlaylistId(searchResult.getId().getPlaylistId());
+//                video.setVideoId(searchResult.getId().getVideoId());
+//                video.setThumbnail(
+//                        searchResult.getSnippet().getThumbnails().getDefault().getUrl() + "+" +
+//                                searchResult.getSnippet().getThumbnails().getMedium().getUrl() + "+" +
+//                                searchResult.getSnippet().getThumbnails().getHigh().getUrl()
+//                );
+//
+//                videos.add(video);
+//                log.info("New video added to the list: {}", video.getVideoId());
+//            }
+//
+//
+//            if (!videos.isEmpty()) {
+//                videoRepository.saveAll(videos);
+//                log.info("Successfully saved {} new videos to the database.", videos.size());
+//            } else {
+//                log.info("No new videos to save. {} videos already existed.", existingVideos);
+//            }
+//
+//        } catch (IOException e) {
+//            log.error("Error occurred while fetching and updating videos: {}", e.getMessage(), e);
+//            throw new RuntimeException("Failed to update videos", e);
+//        }
+//    }
+//
+//    public List<SearchResult> getAllShortVideos() throws IOException {
+//        String nextPageToken = null;
+//        List<SearchResult> allShortVideos = new ArrayList<>();
+//
+//        do {
+//            // API çağrısı
+//            YouTube.Search.List searchRequest = youtubeService.search()
+//                    .list("snippet")
+//                    .setChannelId(ConnectYoutubeApi.CHANNEL_ID)
+//                    .setType("video")
+//                    .setMaxResults(50L)
+//                    .setKey(ConnectYoutubeApi.DEVELOPER_KEY) // API Key ekledik
+////                    .setVideoDuration("short")
+//                    .setPageToken(nextPageToken);
+//
+//            SearchListResponse searchResponse = searchRequest.execute();
+//
+//            // Gelen videoları listeye ekle
+//            List<SearchResult> items = searchResponse.getItems();
+//            if (items != null && !items.isEmpty()) {
+//                allShortVideos.addAll(items);
+//            }
+//
+//            // Bir sonraki sayfa token'ı
+//            nextPageToken = searchResponse.getNextPageToken();
+//
+//        } while (nextPageToken != null);
+//
+//        return allShortVideos;
+//    }
+//
     public List<VideoResponse> searchVideos(int limit, String search){
-        List<Video> videos;
+        List<VideoResponse> videos;
         if(Objects.nonNull(search)){
             videos = videoRepository.searchVideos(search, limit);
         }else {
             videos = videoRepository.searchVideos(limit);
         }
-        return videos.stream()
-                .map(video->VideoResponse.builder()
-                        .title(video.getTitle())
-                        .videoId(video.getVideoId())
-                        .publishedAt(video.getPublishedAt())
-                        .thumbnail(video.getThumbnail())
-                        .title(video.getTitle())
-                        .playlistId(video.getPlaylistId())
-                        .build())
-                .toList();
+//        return videos.stream()
+//                .map(video->VideoResponse.builder()
+//                        .title(video.getTitle())
+//                        .videoId(video.getVideoId())
+//                        .publishedAt(video.getPublishedAt())
+//                        .thumbnail(video.getThumbnail())
+//                        .title(video.getTitle())
+//                        .playlistId(video.getPlaylistId())
+//                        .build())
+//                .toList();
+        return videos;
     }
 
 }

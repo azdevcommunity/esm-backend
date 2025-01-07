@@ -9,7 +9,7 @@ spring:
 #    username: default
 #    password: 0RNlqZuUGC2b
     driver-class-name: org.postgresql.Driver
-    url: ${ESM_DB_URL:jdbc:postgresql://localhost:5434/esmdb}
+    url: ${ESM_DB_URL:jdbc:postgresql://31.220.95.127:5433/esmdb}
     username: ${ESM_DB_USERNAME:postgres}
     password: ${ESM_DB_PASSWORD:123456789}
   jpa:

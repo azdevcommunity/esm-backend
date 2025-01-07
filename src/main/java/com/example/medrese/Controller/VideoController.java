@@ -18,11 +18,9 @@ import java.util.List;
 public class VideoController {
 
     private final VideoService videoService;
-    private final YoutubeService youtubeService;
     @GetMapping
     public ResponseEntity<?> getAll() {
-       youtubeService.call();
-       return ResponseEntity.ok("");
+       return ResponseEntity.ok(videoService.getAll());
     }
 
 //    @GetMapping("/{id}")
@@ -54,7 +52,7 @@ public class VideoController {
 
     @PutMapping
     public void updateVideos() {
-        videoService.addOrUpdateVideos();
+//        videoService.addOrUpdateVideos();
     }
 
     @GetMapping(params = {"sortBy", "sortOrder"})

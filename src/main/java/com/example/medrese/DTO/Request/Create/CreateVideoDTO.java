@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.OffsetDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +20,7 @@ public class CreateVideoDTO {
     @Size(max = 15, message = "Video ID cannot be longer than 15 characters")
     String videoId;
 
-    String publishedAt;
+    OffsetDateTime publishedAt;
 
     String thumbnail;
 

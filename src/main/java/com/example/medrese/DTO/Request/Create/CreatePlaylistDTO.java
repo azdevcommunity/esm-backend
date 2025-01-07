@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.OffsetDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +22,7 @@ public class CreatePlaylistDTO {
     String playlistId;
 
     @NotNull(message = "PublishedAt can not be null")
-    String publishedAt;
+    OffsetDateTime publishedAt;
 
     String thumbnail;
 

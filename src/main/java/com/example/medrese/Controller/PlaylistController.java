@@ -27,25 +27,25 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.getPlaylistById(playlistId));
     }
 
-    @PostMapping
-    public ResponseEntity<PlaylistResponse> createPlaylist(@RequestBody CreatePlaylistDTO createPlaylistDTO) {
-        return ResponseEntity.ok(playlistService.createPlaylist(createPlaylistDTO)) ;
-    }
+//    @PostMapping
+//    public ResponseEntity<PlaylistResponse> createPlaylist(@RequestBody CreatePlaylistDTO createPlaylistDTO) {
+//        return ResponseEntity.ok(playlistService.createPlaylist(createPlaylistDTO)) ;
+//    }
+//
+//    @PutMapping("/{playlistId}")
+//    public ResponseEntity<Playlist> updatePlaylist(@PathVariable String playlistId, @RequestBody Playlist playlistDetails) {
+//        try {
+//            Playlist updatedPlaylist = playlistService.updatePlaylist(playlistId, playlistDetails);
+//            return ResponseEntity.ok(updatedPlaylist);
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
-    @PutMapping("/{playlistId}")
-    public ResponseEntity<Playlist> updatePlaylist(@PathVariable String playlistId, @RequestBody Playlist playlistDetails) {
-        try {
-            Playlist updatedPlaylist = playlistService.updatePlaylist(playlistId, playlistDetails);
-            return ResponseEntity.ok(updatedPlaylist);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{playlistId}")
-    public ResponseEntity<Void> deletePlaylist(@PathVariable String playlistId) {
-        playlistService.deletePlaylist(playlistId);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/{playlistId}")
+//    public ResponseEntity<Void> deletePlaylist(@PathVariable String playlistId) {
+//        playlistService.deletePlaylist(playlistId);
+//        return ResponseEntity.noContent().build();
+//    }
 }
 

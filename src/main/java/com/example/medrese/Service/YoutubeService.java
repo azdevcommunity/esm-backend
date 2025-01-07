@@ -24,10 +24,10 @@ public class YoutubeService {
     public void call() {
         log.info("Scheduled task started at 02:00 AM.");
 
-        playlistService.addOrUpdatePlaylists();
-        videoService.addOrUpdateVideos();
-        videoService.addOrUpdateSearch();
-        playlistService.updatePlaylistVideoCount();
+//        playlistService.addOrUpdatePlaylists();
+//        videoService.addOrUpdateVideos();
+//        videoService.addOrUpdateSearch();
+//        playlistService.updatePlaylistVideoCount();
 
         log.info("Scheduled task completed.");
     }
