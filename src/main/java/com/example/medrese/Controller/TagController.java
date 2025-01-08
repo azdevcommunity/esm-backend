@@ -42,4 +42,10 @@ public class TagController {
         tagService.deleteTag(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/clear-cache")
+    public ResponseEntity<String> clearCache() {
+        tagService.clearAllTagsCache();
+        return ResponseEntity.ok("Cache cleared");
+    }
 }

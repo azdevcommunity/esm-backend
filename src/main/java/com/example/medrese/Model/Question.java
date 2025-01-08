@@ -1,9 +1,14 @@
 package com.example.medrese.Model;
 
+import com.example.medrese.Core.Util.DateUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.checkerframework.checker.units.qual.C;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,4 +38,12 @@ public class Question  {
 
     @Column(name = "author_id")
     Integer authorId;
+
+    @Column(name = "created_date")
+    LocalDateTime createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        createdDate = DateUtil.getCurrentDateTime();
+    }
 }

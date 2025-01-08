@@ -3,12 +3,14 @@ package com.example.medrese.Controller;
 
 import com.example.medrese.DTO.Request.Create.CreateQuestionDTO;
 import com.example.medrese.DTO.Response.QuestionResponse;
+import com.example.medrese.DTO.Response.QuestionSearchResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,22 +18,25 @@ import java.util.Optional;
 @RequestMapping("/api/questions")
 @RequiredArgsConstructor
 public class QuestionController {
-    @Autowired
-    private QuestionService questionService;
+
+    private final QuestionService questionService;
 
     @GetMapping
-    public List<Question> getAllQuestions() {
-        return questionService.getAllQuestions();
+    public ResponseEntity<?> getAllQuestions(@RequestParam(defaultValue = "0", required = false) int page,
+                                             @RequestParam(name = "maxResult", defaultValue = "10", required = false) int size,
+                                             @RequestParam(name = "tagIds", required = false) List<Integer> tagIds,
+                                             @RequestParam(name = "containKeys",defaultValue = "0", required = false) int containKeys) {
+        return ResponseEntity.ok(questionService.getAllQuestions(page, size, tagIds, containKeys));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Question> getQuestionById(@PathVariable Integer id) {
+    public ResponseEntity<?> getQuestionById(@PathVariable Integer id) {
         return ResponseEntity.ok(questionService.getQuestionById(id));
     }
 
     @PostMapping
     public ResponseEntity<QuestionResponse> createQuestion(@RequestBody CreateQuestionDTO createQuestionDTO) {
-        return ResponseEntity.ok(questionService.createQuestion(createQuestionDTO)) ;
+        return ResponseEntity.ok(questionService.createQuestion(createQuestionDTO));
     }
 
     @PutMapping("/{id}")
