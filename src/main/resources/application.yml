@@ -5,11 +5,8 @@ spring:
     caffeine:
       spec: maximumSize=1000, expireAfterWrite=10m
   datasource:
-#    url: jdbc:postgresql://ep-floral-snow-a4msacjt-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require
-#    username: default
-#    password: 0RNlqZuUGC2b
     driver-class-name: org.postgresql.Driver
-    url: ${ESM_DB_URL:jdbc:postgresql://31.220.95.127:5433/esmdb}
+    url: ${ESM_DB_URL:jdbc:postgresql://213.199.46.212/esmdb}
     username: ${ESM_DB_USERNAME:postgres}
     password: ${ESM_DB_PASSWORD:123456789}
   jpa:
