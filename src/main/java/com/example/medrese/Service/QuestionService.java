@@ -41,7 +41,6 @@ public class QuestionService {
     TagRepository tagRepository;
     QuestionTagRepository questionTagRepository;
     AuthorService authorService;
-    CacheManager cacheManager;
 
     public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, int containKeys) {
         Pageable pageable = PageRequest.of(page, size);
