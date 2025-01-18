@@ -38,7 +38,7 @@ public class AuthorService {
     public AuthorResponse getAuthorById(Integer id) {
         return authorRepository.findById(id)
                 .map(authorMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("article not found"));
+                .orElseThrow(() -> new RuntimeException("author not found"));
     }
 
     public AuthorResponse createAuthor(CreateAuthorDTO createAuthorDTO) {
