@@ -114,7 +114,7 @@ public class VideoService {
     }
 
 
-    @Cacheable(value = "videosByPlaylistId", key = "#playlistId")
+//    @Cacheable(value = "videosByPlaylistId", key = "#playlistId")
     public List<VideoResponse> getByPlaylistId(String playlistId) {
         return videoRepository.findAllByPlaylistIdOrderByPublishedAtDesc(playlistId);
 //                .stream()
