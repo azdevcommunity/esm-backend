@@ -4,13 +4,20 @@ package com.example.medrese.Controller;
 import com.example.medrese.DTO.Request.Update.UpdateVideo;
 import com.example.medrese.DTO.Response.VideoResponse;
 import com.example.medrese.Service.VideoService;
-import com.example.medrese.Service.YoutubeService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/videos")
@@ -21,6 +28,16 @@ public class VideoController {
     @GetMapping
     public ResponseEntity<?> getAll() {
        return ResponseEntity.ok(videoService.getAll());
+    }
+
+
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<?> getAll(@RequestParam int page,
+                                    @RequestParam(name = "size")
+                                    @Min(value = 1, message = "Size must be at least 1")
+                                    @Max(value = 40, message = "Size cannot be greater than 40")  int size,
+                                    @RequestParam(defaultValue = "") String search) {
+        return ResponseEntity.ok(videoService.getAllPaging(page, size, search));
     }
 
 //    @GetMapping("/{id}")

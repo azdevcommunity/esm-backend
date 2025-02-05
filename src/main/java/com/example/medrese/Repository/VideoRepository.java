@@ -128,4 +128,22 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             """)
     List<VideoResponse> findAllOrderByPublishedAt();
 
+
+
+    @Query("""
+            SELECT new com.example.medrese.DTO.Response.VideoResponse(
+                v.videoId,
+                v.publishedAt,
+                v.thumbnail,
+                v.title,
+                pv.playlistId
+            )
+            FROM Video v
+            JOIN PlaylistVideo pv ON v.videoId = pv.videoId
+              WHERE (:search IS NULL OR :search = '')
+                   OR v.title LIKE CONCAT('%', :search, '%')
+            order by v.publishedAt DESC
+            """)
+    Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search);
+
 }

@@ -11,27 +11,25 @@ import com.example.medrese.Model.Video;
 import com.example.medrese.Repository.VideoRepository;
 import com.example.medrese.mapper.VideoMapper;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.*;
+import com.google.api.services.youtube.model.Playlist;
+import com.google.api.services.youtube.model.PlaylistItem;
+import com.google.api.services.youtube.model.PlaylistItemListResponse;
+import com.google.api.services.youtube.model.PlaylistListResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import static com.example.medrese.Service.ConnectYoutubeApi.youtubeService;
 
 
@@ -83,6 +81,18 @@ public class VideoService {
         return videoRepository.findAllOrderByPublishedAt();
 
     }
+
+    public Page<VideoResponse> getAllPaging(int page, int size , String search) {
+
+//        List<Video> videos = videoRepository.findAll()
+
+//        List<VideoResponse> responseVideos = videos.stream()
+//                .map(v -> VideoResponse.builder().build()).toList();
+            Pageable pageable = Pageable.ofSize(size).withPage(page);
+        return videoRepository.findAllPagingOrderByPublishedAt(pageable,search);
+
+    }
+
 
     public ResponseEntity<VideoResponse> delete(String id) {
 
