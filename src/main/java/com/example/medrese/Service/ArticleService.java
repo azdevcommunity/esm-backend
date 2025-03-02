@@ -39,6 +39,10 @@ public class ArticleService {
     FileService fileService;
 
     public Page<ArticleProjection> getAllArticles(Pageable pageable, Long categoryId) {
+
+
+
+
         if (ObjectUtils.isEmpty(categoryId) || categoryId == 0) {
             return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable);
         }

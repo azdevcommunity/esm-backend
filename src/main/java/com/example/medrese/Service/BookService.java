@@ -42,6 +42,7 @@ public class BookService {
         return bookRepository.findAllWithAuthor();
     }
 
+
     public BookResponse getBookById(Integer id) {
         return bookRepository.findByIdWithAuthor(id)
                 .orElseThrow(() -> new RuntimeException("Book not found"));
