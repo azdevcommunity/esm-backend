@@ -127,11 +127,10 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             Pageable pageable
     );
 
-    @Query(value = "SELECT a.id AS id, a.title AS title, a.image AS image, a.published_at AS publishedAt " +
-            "FROM articles a " +
-            "ORDER BY a.read_count DESC " +
-            "LIMIT ?1",
-            nativeQuery = true)
+    @Query(value = "SELECT a.id AS id, a.title AS title, a.image AS image, a.publishedAt AS publishedAt " +
+            "FROM Article a " +
+            "ORDER BY a.readCount DESC " +
+            "LIMIT ?1")
     List<PopularArticleProjection> findTopArticles(Integer limit);
 
 
