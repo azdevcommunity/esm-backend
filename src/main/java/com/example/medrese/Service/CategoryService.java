@@ -95,7 +95,7 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-//    @CachePut(value = CacheKeys.MENU_ITEMS)
+    @Cacheable(value = CacheKeys.MENU_ITEMS)
     public List<MenuItemResponse> getCategoryTree() {
         List<Category> categories = categoryRepository.findAll();
 
