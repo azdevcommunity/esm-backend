@@ -69,20 +69,20 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
                               (SELECT json_agg(
                                               json_build_object('categoryId', qc.category_id, 'name', c.name)
                                       )
-                               FROM question_categories qc
-                                        JOIN categories c ON qc.category_id = c.id
+                               FROM esm.question_categories qc
+                                        JOIN esm.categories c ON qc.category_id = c.id
                                WHERE qc.question_id = q.id) AS categories,
                               (SELECT json_agg(
                                               json_build_object('tagId', qt.tag_id, 'name', t.name)
                                       )
-                               FROM question_tags qt
-                                        JOIN tags t ON qt.tag_id = t.id
+                               FROM esm.question_tags qt
+                                        JOIN esm.tags t ON qt.tag_id = t.id
                                WHERE qt.question_id = q.id) AS tags
-                       FROM questions q
+                       FROM esm.questions q
             """,
             countQuery = """
 
-                    SELECT COUNT(*) FROM questions q
+                    SELECT COUNT(*) FROM esm.questions q
     """,
             nativeQuery = true)
     Page<QuestionSearchProjection> searchAllQuestionsOptimized(Pageable pageable);
