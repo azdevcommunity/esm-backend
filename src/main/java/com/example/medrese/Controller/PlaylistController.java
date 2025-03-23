@@ -22,6 +22,13 @@ public class PlaylistController {
         return playlistService.getAllPlaylists();
     }
 
+
+    @GetMapping("/of-video/{videoId}")
+    public ResponseEntity<Playlist> getByOfVideo(@PathVariable String videoId) {
+        return ResponseEntity.ok(playlistService.getByOfVideo(videoId));
+    }
+
+
     @GetMapping("/{playlistId}")
     public ResponseEntity<Playlist> getPlaylistById(@PathVariable String playlistId) {
         return ResponseEntity.ok(playlistService.getPlaylistById(playlistId));

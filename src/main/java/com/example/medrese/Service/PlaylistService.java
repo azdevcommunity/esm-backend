@@ -40,6 +40,10 @@ public class PlaylistService  {
         return  playlistRepository.findByPlaylistId(playlistId).orElseThrow(()->new RuntimeException("playlist not found"));
     }
 
+    public Playlist getByOfVideo(String videoId) {
+        return playlistRepository.getAllByVideoId(videoId).getFirst();
+    }
+
 //    public PlaylistResponse createPlaylist(CreatePlaylistDTO createPlaylistDTO) {
 //        Playlist playlist = playlistMapper.toEntity(createPlaylistDTO);
 //        playlist = playlistRepository.save(playlist);

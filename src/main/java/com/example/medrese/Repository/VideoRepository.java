@@ -133,21 +133,28 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
 
 
 
-    @Query("""
-            SELECT new com.example.medrese.DTO.Response.VideoResponse(
-                v.videoId,
-                v.publishedAt,
-                v.thumbnail,
-                v.title,
-                pv.playlistId
-            )
-            FROM Video v
-            JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-              WHERE (:search IS NULL OR :search = '')
-                   OR v.title LIKE CONCAT('%', :search, '%')
-            and v.isPrivate = false
-            order by v.publishedAt DESC
-            """)
+    @Query(value = """
+        SELECT new com.example.medrese.DTO.Response.VideoResponse(
+            v.videoId,
+            v.publishedAt,
+            v.thumbnail,
+            v.title,
+            null
+        )
+        FROM Video v
+        WHERE ((:search IS NULL OR :search = '')
+               OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
+          AND v.isPrivate = false
+        ORDER BY v.publishedAt DESC
+        """,
+            countQuery = """
+        SELECT COUNT(v)
+        FROM Video v
+        WHERE ((:search IS NULL OR :search = '')
+               OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
+          AND v.isPrivate = false
+        """)
     Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search);
+
 
 }
