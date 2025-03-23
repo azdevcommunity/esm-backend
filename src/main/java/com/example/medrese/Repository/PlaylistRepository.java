@@ -22,15 +22,15 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
 //    List<Playlist> findAllOrderByVideoCountDesc();
 
     @Query("""
-    SELECT p
-    FROM Playlist p
-    JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
-    JOIN Video v ON pv.videoId = v.videoId
-    WHERE v.publishedAt IS NOT NULL
-    GROUP BY p
-    HAVING COUNT(v) > 0
-    ORDER BY MAX(v.publishedAt) DESC
-    """)
+            SELECT p
+            FROM Playlist p
+            JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
+            JOIN Video v ON pv.videoId = v.videoId
+            WHERE v.publishedAt IS NOT NULL and v.isPrivate = false
+            GROUP BY p
+            HAVING COUNT(v) > 0
+            ORDER BY MAX(v.publishedAt) DESC
+            """)
     List<Playlist> findAllOrderByLatestVideo();
 
     Optional<Playlist> findByPlaylistId(String id);

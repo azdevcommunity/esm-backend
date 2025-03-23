@@ -26,7 +26,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             SELECT v
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            WHERE pv.playlistId = :playlistId
+            WHERE pv.playlistId = :playlistId and v.isPrivate = false
             """)
     Page<Video> findVideosByPlaylistId(@Param("playlistId") String playlistId, Pageable pageable);
 
@@ -40,7 +40,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            WHERE pv.playlistId = :playlistId
+            WHERE pv.playlistId = :playlistId and v.isPrivate = false
             """)
     List<VideoResponse> findAllByPlaylistId(@Param("playlistId") String playlistId, Sort sort);
 
@@ -56,7 +56,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            WHERE pv.playlistId = :playlistId
+            WHERE pv.playlistId = :playlistId and v.isPrivate = false
             ORDER BY v.publishedAt DESC
             """)
     List<VideoResponse> findAllByPlaylistIdOrderByPublishedAtDesc(@Param("playlistId") String playlistId);
@@ -74,6 +74,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             FROM Video v
             LEFT JOIN PlaylistVideo pv ON v.videoId = pv.videoId
             LEFT JOIN Playlist p ON pv.playlistId = p.playlistId
+            where v.isPrivate = false
             ORDER BY FUNCTION('RANDOM')
             LIMIT :limit
             """)
@@ -108,6 +109,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             WHERE (:search IS NULL OR :search = '')
                OR (p.playlistId LIKE CONCAT('%', :search, '%')
                    OR v.title LIKE CONCAT('%', :search, '%'))
+            and v.isPrivate = false
             ORDER BY FUNCTION('RANDOM')
             LIMIT :limit
             """)
@@ -124,6 +126,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
+            where v.isPrivate = false
             order by v.publishedAt DESC
             """)
     List<VideoResponse> findAllOrderByPublishedAt();
@@ -142,6 +145,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
               WHERE (:search IS NULL OR :search = '')
                    OR v.title LIKE CONCAT('%', :search, '%')
+            and v.isPrivate = false
             order by v.publishedAt DESC
             """)
     Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search);

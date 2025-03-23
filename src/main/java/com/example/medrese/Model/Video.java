@@ -37,6 +37,9 @@ public class Video  {
     @Column(name = "title")
     String title;
 
+    @Column(name = "is_private")
+    Boolean isPrivate;
+
 //    @JoinColumn(name = "playlist_id")
 //    String playlistId;
 
