@@ -76,7 +76,7 @@ public class ArticleService {
         Article article = articleMapper.toEntity(createArticleDTO);
 
         if (fileService.isBase64(createArticleDTO.getImage())) {
-            article.setImage(fileService.uploadFile(createArticleDTO.getImage()));
+            article.setImage(fileService.uploadFile(createArticleDTO.getImage(), "esm/articles"));
         }
 
         article = articleRepository.save(article);
@@ -114,8 +114,8 @@ public class ArticleService {
         }
 
         if (fileService.isBase64(articleDetails.getImage())) {
-            fileService.deleteFile(article.getImage());
-            String image = fileService.uploadFile(articleDetails.getImage());
+            fileService.deleteFile(article.getImage(),"esm/articles");
+            String image = fileService.uploadFile(articleDetails.getImage(),"esm/articles");
             article.setImage(image);
         }
 
@@ -167,7 +167,7 @@ public class ArticleService {
 
         articleRepository.delete(article);
 
-        fileService.deleteFile(article.getImage());
+        fileService.deleteFile(article.getImage(), "esm/articles");
 
     }
 

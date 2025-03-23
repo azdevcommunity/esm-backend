@@ -3,15 +3,6 @@ package com.example.medrese.Service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.api.ApiResponse;
 import com.example.medrese.Core.Util.RandomUtil;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,10 +11,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.regex.Pattern;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +32,10 @@ public class FileService {
     Cloudinary cloudinary;
 
     public String uploadFile(String base64File) {
+        return uploadFile(base64File, "esm");
+    }
+
+    public String uploadFile(String base64File, String folder) {
         if (ObjectUtils.isEmpty(base64File)) {
             throw new IllegalArgumentException("base64File can not be null");
         }
@@ -45,7 +47,8 @@ public class FileService {
 
             Map optios = com.cloudinary.utils.ObjectUtils.asMap(
                     "public_id", fileName,
-                    "resource_type", "image"
+                    "resource_type", "image",
+                    "asset_folder", folder
             );
 
             Map<String, Object> response = cloudinary.uploader().upload(file, optios);
@@ -65,14 +68,13 @@ public class FileService {
         }
     }
 
-    public void deleteFile(String fileName) {
+    public void deleteFile(String fileName, String folder) {
         if (ObjectUtils.isEmpty(fileName)) {
             return;
         }
-        deleteFile(new ArrayList<>(List.of(fileName)));
+        deleteFile(new ArrayList<>(List.of(fileName)), folder);
     }
-
-    public void deleteFile(List<String> fileName) {
+    public void deleteFile(List<String> fileName, String folder) {
         try {
             if (ObjectUtils.isEmpty(fileName)) {
                 return;
@@ -85,7 +87,9 @@ public class FileService {
                                 return (dotIndex == -1) ? name : name.substring(0, dotIndex);
                             }).toList(),
                     com.cloudinary.utils.ObjectUtils.asMap("type", "upload",
-                            "resource_type", "image"));
+                            "resource_type", "image",
+                            "asset_folder", folder
+                    ));
             log.info(apiResponse);
         } catch (Exception exception) {
             log.error("Error while deleting file", exception);

@@ -47,7 +47,7 @@ public class AuthorService {
         }
 
 
-        String image = fileService.uploadFile(createAuthorDTO.getImage());
+        String image = fileService.uploadFile(createAuthorDTO.getImage(), "esm/authors");
         createAuthorDTO.setImage(image);
 
         Author author = authorMapper.toEntity(createAuthorDTO);
@@ -65,8 +65,8 @@ public class AuthorService {
         }
 
         if (fileService.isBase64(authorDetails.getImage())) {
-            fileService.deleteFile(author.getImage());
-            String image = fileService.uploadFile(authorDetails.getImage());
+            fileService.deleteFile(author.getImage(),"esm/authors");
+            String image = fileService.uploadFile(authorDetails.getImage(),"esm/authors");
             author.setImage(image);
         }
 
@@ -93,7 +93,7 @@ public class AuthorService {
 
         authorRepository.deleteById(id);
 
-        fileService.deleteFile(author.getImage());
+        fileService.deleteFile(author.getImage(),"esm/authors");
     }
 
 

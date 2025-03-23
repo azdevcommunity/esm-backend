@@ -53,7 +53,7 @@ public class BookService {
             throw new RuntimeException("Author not exists");
         }
 
-        String image = fileService.uploadFile(createBookDTO.getImage());
+        String image = fileService.uploadFile(createBookDTO.getImage(),"esm/books");
         createBookDTO.setImage(image);
 
         Book book = bookMapper.toEntity(createBookDTO);
@@ -75,8 +75,8 @@ public class BookService {
 
 
         if (fileService.isBase64(bookDetails.getImage())) {
-            fileService.deleteFile(book.getImage());
-            String image = fileService.uploadFile(bookDetails.getImage());
+            fileService.deleteFile(book.getImage(),"esm/books");
+            String image = fileService.uploadFile(bookDetails.getImage(), "esm/books");
             book.setImage(image);
         }
 
@@ -101,7 +101,7 @@ public class BookService {
 
         bookRepository.delete(book);
 
-        fileService.deleteFile(book.getImage());
+        fileService.deleteFile(book.getImage(),"esm/books");
 
     }
 }
