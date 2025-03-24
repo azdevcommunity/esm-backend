@@ -437,4 +437,15 @@ public class VideoService {
 //                .toList();
         return videos;
     }
+
+    public ResponseEntity<VideoResponse> getById(String id) {
+        Video video = videoRepository.findByVideoId(id)
+                .orElseThrow(() -> new VideoNotFoundException(id));
+        return ResponseEntity.ok(VideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .publishedAt(video.getPublishedAt())
+                .thumbnail(video.getThumbnail())
+                .build());
+    }
 }

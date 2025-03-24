@@ -40,10 +40,10 @@ public class VideoController {
         return ResponseEntity.ok(videoService.getAllPaging(page, size, search));
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<VideoResponse> getById(@PathVariable String id) {
-//        return videoService.getById(id);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<VideoResponse> getById(@PathVariable String id) {
+        return videoService.getById(id);
+    }
 
 
 

@@ -5,6 +5,7 @@ import com.example.medrese.DTO.Request.Update.DeleteArticles;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleIdProjection;
 import com.example.medrese.DTO.Response.ArticleProjection;
+import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.ArticleResponse;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.Author;
@@ -25,13 +26,13 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping
-    public ResponseEntity<Page<ArticleProjection>> getAllArticles(
+    public ResponseEntity<Page<ArticleProjection2>> getAllArticles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Long categoryId) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ArticleProjection> articles = articleService.getAllArticles(pageable, categoryId);
+        Page<ArticleProjection2> articles = articleService.getAllArticles(pageable, categoryId);
         return ResponseEntity.ok(articles);
     }
 

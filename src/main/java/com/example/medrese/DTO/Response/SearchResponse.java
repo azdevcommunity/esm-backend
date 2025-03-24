@@ -11,7 +11,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class SearchResponse {
-    List<ArticleProjection> articles;
+    List<ArticleProjection2> articles;
     List<BookResponse> books;
     List<VideoResponse> videos;
 }

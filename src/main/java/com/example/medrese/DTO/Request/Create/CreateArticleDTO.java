@@ -29,7 +29,7 @@ public class CreateArticleDTO {
     String content;
 
     @NotNull(message = "Author is required")
-    Set<Integer> authorIds;
+    Integer authorId;
 
     @NotNull(message = "Categories is required")
     Set<Integer> categories;

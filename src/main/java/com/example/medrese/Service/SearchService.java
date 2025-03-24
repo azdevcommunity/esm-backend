@@ -1,6 +1,7 @@
 package com.example.medrese.Service;
 
 import com.example.medrese.DTO.Response.ArticleProjection;
+import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.BookResponse;
 import com.example.medrese.DTO.Response.SearchResponse;
 import com.example.medrese.DTO.Response.VideoResponse;
@@ -24,7 +25,7 @@ public class SearchService {
     VideoService videoService;
 
     public SearchResponse search(Long categoryId, String search) {
-        List<ArticleProjection> articleProjections = articleService.searchArticles(
+        List<ArticleProjection2> articleProjections = articleService.searchArticles(
                 4,categoryId,search
         ).get().toList();
 

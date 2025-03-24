@@ -1,29 +1,33 @@
 package com.example.medrese.Service;
 
+import com.example.medrese.Core.Util.Exceptions.Global.NotFoundException;
 import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.DeleteArticles;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
-import com.example.medrese.DTO.Response.*;
+import com.example.medrese.DTO.Response.ArticleIdProjection;
+import com.example.medrese.DTO.Response.ArticleProjection;
+import com.example.medrese.DTO.Response.ArticleProjection2;
+import com.example.medrese.DTO.Response.ArticleResponse;
+import com.example.medrese.DTO.Response.AuthorResponse;
+import com.example.medrese.DTO.Response.PopularArticleProjection;
 import com.example.medrese.Model.Article;
 import com.example.medrese.Model.ArticleCategory;
-import com.example.medrese.Model.AuthorArticle;
-import com.example.medrese.Repository.*;
+import com.example.medrese.Repository.ArticleCategoryRepository;
+import com.example.medrese.Repository.ArticleRepository;
+import com.example.medrese.Repository.AuthorRepository;
+import com.example.medrese.Repository.CategoryRepository;
 import com.example.medrese.mapper.ArticleMapper;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.junit.runner.Request;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -35,10 +39,10 @@ public class ArticleService {
     CategoryRepository categoryRepository;
     ArticleCategoryRepository articleCategoryRepository;
     AuthorRepository authorRepository;
-    AuthorArticleRepository authorArticleRepository;
+    //    AuthorArticleRepository authorArticleRepository;
     FileService fileService;
 
-    public Page<ArticleProjection> getAllArticles(Pageable pageable, Long categoryId) {
+    public Page<ArticleProjection2> getAllArticles(Pageable pageable, Long categoryId) {
         if (ObjectUtils.isEmpty(categoryId) || categoryId == 0) {
             return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable);
         }
@@ -50,8 +54,13 @@ public class ArticleService {
     }
 
     public ArticleResponse getArticleById(Integer id, boolean isAdminRequest) {
-        Article article = articleRepository.findById(id).orElseThrow(() -> new RuntimeException("author not found"));
-        List<AuthorResponse> authors = authorRepository.findByArticleId(id);
+        Article article = articleRepository.findById(id).orElseThrow(() -> new NotFoundException("article not found"));
+        AuthorResponse author = authorRepository.findById(article.getAuthorId())
+                .map(a -> new AuthorResponse(
+                        a.getId(), a.getName(), a.getImage()
+                ))
+                .orElseThrow(() -> new RuntimeException("Author not found"));
+        ;
         List<Integer> categories = articleCategoryRepository.findByArticleId(article.getId()).stream()
                 .map(ArticleCategory::getCategoryId)
                 .collect(Collectors.toSet())
@@ -59,7 +68,7 @@ public class ArticleService {
                 .toList();
 
         ArticleResponse articleResponse = articleMapper.toResponse(article);
-        articleResponse.setAuthors(authors);
+        articleResponse.setAuthor(author);
         articleResponse.setCategories(categories);
 
 
@@ -92,15 +101,16 @@ public class ArticleService {
             }
         }
 
-        for (int authorId : createArticleDTO.getAuthorIds()) {
-            if (authorRepository.existsById(authorId)) {
-                AuthorArticle authorArticle = AuthorArticle.builder()
-                        .authorId(authorId)
-                        .articleId(article.getId())
-                        .build();
-                authorArticleRepository.save(authorArticle);
+
+        if (!authorRepository.existsById(createArticleDTO.getAuthorId())) {
+            throw new RuntimeException("author not found");
+//                AuthorArticle authorArticle = AuthorArticle.builder()
+//                        .authorId(createArticleDTO.getAuthorId())
+//                        .articleId(article.getId())
+//                        .build();
+//                authorArticleRepository.save(authorArticle);
             }
-        }
+
         return articleMapper.toResponse(article);
     }
 
@@ -139,17 +149,19 @@ public class ArticleService {
             }
         }
 
-        if (!ObjectUtils.isEmpty(articleDetails.getAuthorIds())) {
-            authorArticleRepository.deleteByAuthorIdInAndArticleId(articleDetails.getAuthorIds().stream().toList(), article.getId());
-            for (Integer author : articleDetails.getAuthorIds()) {
-                if (authorRepository.existsById(author)) {
-                    AuthorArticle authorArticle = AuthorArticle.builder()
-                            .articleId(article.getId())
-                            .authorId(author)
-                            .build();
-                    authorArticleRepository.save(authorArticle);
+        if (!ObjectUtils.isEmpty(articleDetails.getAuthorId())) {
+//            authorArticleRepository.deleteByAuthorIdInAndArticleId(List.of(articleDetails.getAuthorId()), article.getId());
+
+            if (!authorRepository.existsById(articleDetails.getAuthorId())) {
+                throw new RuntimeException("author not found");
+//                    AuthorArticle authorArticle = AuthorArticle.builder()
+//                            .articleId(article.getId())
+//                            .authorId(articleDetails.getAuthorIds())
+//                            .build();
+//                    authorArticleRepository.save(authorArticle);
+
                 }
-            }
+
 
         }
 
@@ -189,7 +201,7 @@ public class ArticleService {
         articleRepository.incrementReadCount(id);
     }
 
-    public Page<ArticleProjection> searchArticles(int limit, Long categoryId, String search) {
+    public Page<ArticleProjection2> searchArticles(int limit, Long categoryId, String search) {
         Pageable pageable = Pageable.ofSize(limit).withPage(0);
         if(Objects.nonNull(categoryId)){
             return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);

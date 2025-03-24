@@ -20,7 +20,7 @@ public class ArticleResponse {
     String publishedAt;
     String title;
     String content;
-    List<AuthorResponse> authors;
+    AuthorResponse author;
     List<Integer> categories;
     String image;
     Long readCount;

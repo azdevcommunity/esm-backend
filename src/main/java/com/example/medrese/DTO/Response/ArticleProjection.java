@@ -6,6 +6,7 @@ public interface ArticleProjection {
     Long getId();
     String getTitle();
     String getImage();
-    List<String> getAuthors();
+    String getAuthorName();
     List<String> getCategories();
 }
+

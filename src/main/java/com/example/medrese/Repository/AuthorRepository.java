@@ -14,13 +14,13 @@ public interface AuthorRepository extends JpaRepository<Author, Integer> {
 
     boolean existsByName(String name);
 
-    @Query("""
-        select new com.example.medrese.DTO.Response.AuthorResponse(
-        a.id,a.name,a.image
-      )
-        from Author a
-        left join AuthorArticle  aa on a.id = aa.authorId
-        where aa.articleId = :id
-""")
-    List<AuthorResponse> findByArticleId(int id);
+//    @Query("""
+//        select new com.example.medrese.DTO.Response.AuthorResponse(
+//        a.id,a.name,a.image
+//      )
+//        from Author a
+//        left join AuthorArticle  aa on a.id = aa.authorId
+//        where aa.articleId = :id
+//""")
+//    List<AuthorResponse> findByArticleId(int id);
 }

@@ -40,4 +40,5 @@ public class Article {
     @Column(name = "read_count", nullable = false, columnDefinition = "BIGINT DEFAULT 0")
     Long readCount = 0L;
 
+    Integer authorId;
 }

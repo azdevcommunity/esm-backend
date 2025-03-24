@@ -5,7 +5,8 @@ import com.example.medrese.DTO.Request.Create.CreateAuthorDTO;
 import com.example.medrese.DTO.Request.Update.UpdateAuthor;
 import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.Model.Author;
-import com.example.medrese.Repository.AuthorArticleRepository;
+//import com.example.medrese.Repository.AuthorArticleRepository;
+import com.example.medrese.Repository.ArticleRepository;
 import com.example.medrese.Repository.AuthorBookRepository;
 import com.example.medrese.Repository.AuthorRepository;
 import com.example.medrese.mapper.AuthorMapper;
@@ -26,8 +27,9 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
     private final AuthorBookRepository authorBookRepository;
-    private final AuthorArticleRepository authorArticleRepository;
+//    private final AuthorArticleRepository authorArticleRepository;
     private final FileService fileService;
+    private final ArticleRepository articleRepository;
 
     public List<AuthorResponse> getAllAuthors() {
         return authorRepository.findAll().stream()
@@ -83,12 +85,11 @@ public class AuthorService {
             throw new RuntimeException("Bu authorun kitabi var sile bilmersen");
         }
 
-        if (authorArticleRepository.existsByAuthorId(id)) {
+        if (articleRepository.existsByAuthorId(id)) {
             throw new RuntimeException("Bu authorun meqalesi var sile bilmersen");
         }
 
         authorRepository.delete(author);
-
 
 
         authorRepository.deleteById(id);
