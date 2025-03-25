@@ -8,6 +8,7 @@ import com.example.medrese.DTO.Response.QuestionSearchResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Model.QuestionCategory;
 import com.example.medrese.Model.QuestionTag;
+import com.example.medrese.Repository.CategoryRepository;
 import com.example.medrese.Repository.QuestionCategoryRepository;
 import com.example.medrese.Repository.QuestionRepository;
 import com.example.medrese.Repository.QuestionTagRepository;
@@ -41,18 +42,23 @@ public class QuestionService {
     TagRepository tagRepository;
     QuestionTagRepository questionTagRepository;
     AuthorService authorService;
+    CategoryRepository categoryRepository;
 
-    public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, int containKeys) {
+    public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, int containsTag,int containsCategory) {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<QuestionSearchResponse> questionPage = questionRepository.searchAllQuestions(pageable,
                 ObjectUtils.isEmpty(tagIds) ? null : tagIds
         );
 
-        if(containKeys == 1){
+        if(containsTag == 1 || containsCategory == 1){
             questionPage.forEach(question -> {
-                question.setCategories(questionRepository.findAllCategoriesByQuestion(question.getId()));
-                question.setTags(questionRepository.findAllTagsByQuestion(question.getId()));
+                if (containsTag == 1){
+                    question.setTags(questionRepository.findAllTagsByQuestion(question.getId()));
+                }
+                if (containsCategory == 1){
+                    question.setCategories(questionRepository.findAllCategoriesByQuestion(question.getId()));
+                }
             });
         }
 
@@ -74,7 +80,7 @@ public class QuestionService {
     @Transactional
     public QuestionResponse createQuestion(CreateQuestionDTO createQuestionDTO) {
         //TODO:helelik
-        createQuestionDTO.setAuthor(1);
+        createQuestionDTO.setAuthor(2);
 
         if (Objects.nonNull(createQuestionDTO.getAuthor())) {
             authorService.getAuthorById(createQuestionDTO.getAuthor());
@@ -85,7 +91,7 @@ public class QuestionService {
         question.setAuthorId(createQuestionDTO.getAuthor());
 
         for (Integer category : createQuestionDTO.getCategories()) {
-            if (!questionRepository.existsById(category)) {
+            if (!categoryRepository.existsById(category)) {
                 continue;
             }
             QuestionCategory questionCategory = QuestionCategory.builder()
@@ -118,6 +124,7 @@ public class QuestionService {
         return question;
     }
 
+    @Transactional
     public void deleteQuestion(Integer id) {
         if (!questionRepository.existsById(id)) {
             throw new RuntimeException("does not exist");

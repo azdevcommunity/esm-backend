@@ -25,11 +25,11 @@ public class Question  {
     Integer id;
 
     @NotBlank
-    @Column(name = "question")
+    @Column(name = "question", columnDefinition = "TEXT")
     String question;
 
     @NotBlank
-    @Column(name = "answer")
+    @Column(name = "answer", columnDefinition = "TEXT")
     String answer;
 
     @Enumerated(EnumType.STRING)
