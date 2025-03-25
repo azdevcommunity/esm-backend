@@ -54,7 +54,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
                 SELECT new com.example.medrese.DTO.Response.QuestionSearchResponse(
                     q.id,
                     q.question,
-                    q.answer
+                    q.answer,
+                    q.createdDate
                 )
                 FROM Question q
                 where q.id = :questionId
