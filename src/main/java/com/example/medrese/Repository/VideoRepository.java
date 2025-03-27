@@ -2,6 +2,8 @@ package com.example.medrese.Repository;
 
 import com.example.medrese.DTO.Response.VideoResponse;
 import com.example.medrese.Model.Video;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -10,9 +12,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Integer> {
@@ -157,4 +156,16 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search);
 
 
+    @Query("""
+                SELECT new com.example.medrese.DTO.Response.VideoResponse(
+                    v.videoId,
+                    v.publishedAt,
+                    v.thumbnail,
+                    v.title,
+                    null
+                )
+                FROM Video v
+                ORDER BY v.publishedAt DESC
+            """)
+    List<VideoResponse> findLatestVideo(Pageable pageable);
 }

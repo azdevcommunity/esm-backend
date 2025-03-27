@@ -86,4 +86,9 @@ public class VideoController {
     public ResponseEntity<?> getAllPaged(@RequestParam String playlistId,@RequestParam int page,@RequestParam(name = "maxResult") int size) {
         return videoService.getByPlaylistIdAndPagination(playlistId, page, size);
     }
+
+    @GetMapping("/latest")
+    public ResponseEntity<?> getLatestVideo() {
+        return ResponseEntity.ok(videoService.getLatestVideo());
+    }
 }

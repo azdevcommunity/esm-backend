@@ -448,4 +448,8 @@ public class VideoService {
                 .thumbnail(video.getThumbnail())
                 .build());
     }
+
+    public VideoResponse getLatestVideo() {
+        return videoRepository.findLatestVideo(PageRequest.of(0, 1)).get(0);
+    }
 }
