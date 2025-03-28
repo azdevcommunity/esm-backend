@@ -1,15 +1,15 @@
 package com.example.medrese.Controller;
 
-import com.example.medrese.DTO.Request.Create.CreatePlaylistDTO;
-import com.example.medrese.DTO.Response.PlaylistResponse;
 import com.example.medrese.Model.Playlist;
 import com.example.medrese.Service.PlaylistService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/playlists")
@@ -17,9 +17,9 @@ import java.util.Optional;
 public class PlaylistController {
     private final PlaylistService playlistService;
 
-    @GetMapping
-    public List<Playlist> getAllPlaylists() {
-        return playlistService.getAllPlaylists();
+    @GetMapping(params = {"search"})
+    public List<Playlist> getAllPlaylists(@RequestParam(required = false, name = "search") String search) {
+        return playlistService.getAllPlaylistsWithSearch(search);
     }
 
 

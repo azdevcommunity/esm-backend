@@ -35,6 +35,9 @@ public class PlaylistService  {
     public List<Playlist> getAllPlaylists() {
         return playlistRepository.findAllOrderByLatestVideo();
     }
+    public List<Playlist> getAllPlaylistsWithSearch(String search) {
+        return playlistRepository.findAllOrderByLatestVideoWithSearch(search);
+    }
 
     public Playlist getPlaylistById(String playlistId) {
         return  playlistRepository.findByPlaylistId(playlistId).orElseThrow(()->new RuntimeException("playlist not found"));

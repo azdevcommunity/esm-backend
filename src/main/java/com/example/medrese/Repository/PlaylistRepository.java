@@ -43,4 +43,18 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
                 WHERE pv.videoId = :videoId
             """)
     List<Playlist> getAllByVideoId(@Param("videoId") String videoId);
+
+
+    @Query("""
+            SELECT p
+            FROM Playlist p
+            JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
+            JOIN Video v ON pv.videoId = v.videoId
+            WHERE v.publishedAt IS NOT NULL and v.isPrivate = false
+                          AND (:search IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :search, '%')))
+            GROUP BY p
+            HAVING COUNT(v) > 0
+            ORDER BY MAX(v.publishedAt) DESC
+            """)
+    List<Playlist> findAllOrderByLatestVideoWithSearch(@Param("search") String search);
 }
