@@ -40,6 +40,12 @@ public class Video  {
     @Column(name = "is_private")
     Boolean isPrivate;
 
+    @Column(name = "is_short")
+    Boolean isShort;
+
+    @Column(name = "description")
+    String description;
+
 //    @JoinColumn(name = "playlist_id")
 //    String playlistId;
 
