@@ -82,14 +82,15 @@ public class VideoService {
 
     }
 
-    public Page<VideoResponse> getAllPaging(int page, int size , String search) {
+    public Page<VideoResponse> getAllPaging(int page, int size, String search, int shorts) {
 
 //        List<Video> videos = videoRepository.findAll()
 
 //        List<VideoResponse> responseVideos = videos.stream()
 //                .map(v -> VideoResponse.builder().build()).toList();
+        boolean isShort = shorts == 1;
             Pageable pageable = Pageable.ofSize(size).withPage(page);
-        return videoRepository.findAllPagingOrderByPublishedAt(pageable,search);
+        return videoRepository.findAllPagingOrderByPublishedAt(pageable,search, isShort);
 
     }
 

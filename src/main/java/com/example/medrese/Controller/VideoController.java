@@ -36,8 +36,9 @@ public class VideoController {
                                     @RequestParam(name = "size")
                                     @Min(value = 1, message = "Size must be at least 1")
                                     @Max(value = 40, message = "Size cannot be greater than 40")  int size,
-                                    @RequestParam(defaultValue = "") String search) {
-        return ResponseEntity.ok(videoService.getAllPaging(page, size, search));
+                                    @RequestParam(defaultValue = "") String search,
+                                    @RequestParam(defaultValue = "0", name="shorts") int shorts) {
+        return ResponseEntity.ok(videoService.getAllPaging(page, size, search, shorts));
     }
 
     @GetMapping("/{id}")

@@ -44,7 +44,7 @@ public class PlaylistService  {
     }
 
     public Playlist getByOfVideo(String videoId) {
-        return playlistRepository.getAllByVideoId(videoId).getFirst();
+        return playlistRepository.getAllByVideoId(videoId).getLast();
     }
 
 //    public PlaylistResponse createPlaylist(CreatePlaylistDTO createPlaylistDTO) {

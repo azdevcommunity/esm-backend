@@ -1,15 +1,18 @@
 package com.example.medrese.Model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.time.OffsetDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -43,7 +46,7 @@ public class Video  {
     @Column(name = "is_short")
     Boolean isShort;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     String description;
 
 //    @JoinColumn(name = "playlist_id")

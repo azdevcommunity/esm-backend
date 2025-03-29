@@ -143,17 +143,17 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
         FROM Video v
         WHERE ((:search IS NULL OR :search = '')
                OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
-          AND v.isPrivate = false
+          AND v.isPrivate = false and v.isShort = :isShort
         ORDER BY v.publishedAt DESC
         """,
             countQuery = """
-        SELECT COUNT(v)
-        FROM Video v
-        WHERE ((:search IS NULL OR :search = '')
-               OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
-          AND v.isPrivate = false
-        """)
-    Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search);
+                    SELECT COUNT(v)
+                    FROM Video v
+                    WHERE ((:search IS NULL OR :search = '')
+                           OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
+                      AND v.isPrivate = false  and v.isShort = :isShort
+                    """)
+    Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search, Boolean isShort);
 
 
     @Query("""
