@@ -35,7 +35,8 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                 v.publishedAt,
                 v.thumbnail,
                 v.title,
-                pv.playlistId
+                pv.playlistId,
+                v.description
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
@@ -51,7 +52,8 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                 v.publishedAt,
                 v.thumbnail,
                 v.title,
-                pv.playlistId
+                pv.playlistId,
+                v.description
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
@@ -68,7 +70,8 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                 v.publishedAt,
                 v.thumbnail,
                 v.title,
-                p.playlistId
+                p.playlistId,
+                v.description
             )
             FROM Video v
             LEFT JOIN PlaylistVideo pv ON v.videoId = pv.videoId
@@ -100,7 +103,8 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                 v.publishedAt,
                 v.thumbnail,
                 v.title,
-                p.playlistId
+                p.playlistId,
+                v.description
             )
             FROM Video v
             LEFT JOIN PlaylistVideo pv ON v.videoId = pv.videoId
@@ -121,7 +125,8 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                 v.publishedAt,
                 v.thumbnail,
                 v.title,
-                pv.playlistId
+                pv.playlistId,
+                v.description
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
@@ -138,7 +143,8 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             v.publishedAt,
             v.thumbnail,
             v.title,
-            null
+            null,
+                v.description
         )
         FROM Video v
         WHERE ((:search IS NULL OR :search = '')
@@ -156,16 +162,11 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search, Boolean isShort);
 
 
-    @Query("""
-                SELECT new com.example.medrese.DTO.Response.VideoResponse(
-                    v.videoId,
-                    v.publishedAt,
-                    v.thumbnail,
-                    v.title,
-                    null
-                )
-                FROM Video v
-                ORDER BY v.publishedAt DESC
-            """)
-    List<VideoResponse> findLatestVideo(Pageable pageable);
+    @Query(value = """
+            SELECT v.video_id, v.published_at, v.thumbnail, v.title, NULL, v.description  
+                        FROM video v  
+                        ORDER BY v.published_at DESC  
+                        LIMIT 1 
+            """, nativeQuery = true)
+    VideoResponse findLatestVideo();
 }

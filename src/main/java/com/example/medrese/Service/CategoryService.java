@@ -39,7 +39,7 @@ public class CategoryService {
 
 //    @CachePut(value = CacheKeys.ALL_CATEGORIES)
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByIsActiveTrue();
     }
 
     public CategoryResponse getCategoryById(Integer id) {
@@ -97,7 +97,7 @@ public class CategoryService {
 
     @Cacheable(value = CacheKeys.MENU_ITEMS)
     public List<MenuItemResponse> getCategoryTree() {
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAllByIsActiveTrue();
 
         List<MenuItemResponse> menuItems = categories.stream()
                 .map(category -> MenuItemResponse.builder()

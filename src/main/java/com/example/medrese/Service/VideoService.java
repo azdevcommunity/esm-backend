@@ -447,10 +447,11 @@ public class VideoService {
                 .title(video.getTitle())
                 .publishedAt(video.getPublishedAt())
                 .thumbnail(video.getThumbnail())
+                .description(video.getDescription())
                 .build());
     }
 
     public VideoResponse getLatestVideo() {
-        return videoRepository.findLatestVideo(PageRequest.of(0, 1)).get(0);
+       return videoRepository.findLatestVideo();
     }
 }
