@@ -17,10 +17,7 @@ import com.example.medrese.mapper.QuestionMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,11 +40,11 @@ public class QuestionService {
     AuthorService authorService;
     CategoryRepository categoryRepository;
 
-    public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, int containsTag,int containsCategory) {
+    public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, int containsTag, int containsCategory, String search) {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<QuestionSearchResponse> questionPage = questionRepository.searchAllQuestions(pageable,
-                ObjectUtils.isEmpty(tagIds) ? null : tagIds
+                ObjectUtils.isEmpty(tagIds) ? null : tagIds, search
         );
 
         if(containsTag == 1 || containsCategory == 1){
@@ -63,7 +59,6 @@ public class QuestionService {
         }
 
         return questionPage;
-//        return questionRepository.searchAllQuestionsOptimized(pageable);
     }
 
     public QuestionSearchResponse getQuestionById(Integer id) {
@@ -133,6 +128,7 @@ public class QuestionService {
         questionCategoryRepository.deleteByQuestionId(id);
         questionTagRepository.deleteByQuestionId(id);
         questionRepository.deleteById(id);
+
     }
 }
 

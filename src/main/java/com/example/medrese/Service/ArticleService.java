@@ -42,11 +42,11 @@ public class ArticleService {
     //    AuthorArticleRepository authorArticleRepository;
     FileService fileService;
 
-    public Page<ArticleProjection2> getAllArticles(Pageable pageable, Long categoryId) {
-        if (ObjectUtils.isEmpty(categoryId) || categoryId == 0) {
+    public Page<ArticleProjection2> getAllArticles(Pageable pageable, List<Long> categoryIds) {
+        if (ObjectUtils.isEmpty(categoryIds)) {
             return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable);
         }
-        return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);
+        return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryIds);
     }
 
     public List<ArticleIdProjection> getAllArticles() {
@@ -201,7 +201,7 @@ public class ArticleService {
         articleRepository.incrementReadCount(id);
     }
 
-    public Page<ArticleProjection2> searchArticles(int limit, Long categoryId, String search) {
+    public Page<ArticleProjection2> searchArticles(int limit, List<Long> categoryId, String search) {
         Pageable pageable = Pageable.ofSize(limit).withPage(0);
         if(Objects.nonNull(categoryId)){
             return articleRepository.findAllArticlesWithAuthorsAndCategories(pageable, categoryId);

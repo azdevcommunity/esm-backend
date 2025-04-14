@@ -1,10 +1,10 @@
 package com.example.medrese.Repository;
 
 import com.example.medrese.DTO.Response.ArticleIdProjection;
-import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.PopularArticleProjection;
 import com.example.medrese.Model.Article;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,8 +12,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
@@ -42,7 +40,7 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     @Query(value = "WITH RECURSIVE category_tree AS ( " +
             "    SELECT id, parent_id " +
             "    FROM esm.categories " +
-            "    WHERE id = :categoryId " +
+            "    WHERE id IN (:categoryIds) " +  // Changed to IN to accept multiple category IDs
             "    UNION ALL " +
             "    SELECT c.id, c.parent_id " +
             "    FROM esm.categories c " +
@@ -63,7 +61,7 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             countQuery = "WITH RECURSIVE category_tree AS ( " +
                     "    SELECT id, parent_id " +
                     "    FROM esm.categories " +
-                    "    WHERE id = :categoryId " +
+                    "    WHERE id IN (:categoryIds) " +  // Changed to IN to accept multiple category IDs
                     "    UNION ALL " +
                     "    SELECT c.id, c.parent_id " +
                     "    FROM esm.categories c " +
@@ -75,8 +73,7 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
                     "LEFT JOIN esm.categories c ON ac.category_id = c.id " +
                     "WHERE c.id IN (SELECT id FROM category_tree)",
             nativeQuery = true)
-    Page<ArticleProjection2> findAllArticlesWithAuthorsAndCategories(Pageable pageable, @Param("categoryId") Long categoryId);
-
+    Page<ArticleProjection2> findAllArticlesWithAuthorsAndCategories(Pageable pageable, @Param("categoryIds") List<Long> categoryIds);
 
     @Query(value = """
             SELECT 

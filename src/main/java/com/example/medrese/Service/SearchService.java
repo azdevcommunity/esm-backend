@@ -1,18 +1,14 @@
 package com.example.medrese.Service;
 
-import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.BookResponse;
 import com.example.medrese.DTO.Response.SearchResponse;
 import com.example.medrese.DTO.Response.VideoResponse;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +22,7 @@ public class SearchService {
 
     public SearchResponse search(Long categoryId, String search) {
         List<ArticleProjection2> articleProjections = articleService.searchArticles(
-                4,categoryId,search
+                4, List.of(categoryId), search
         ).get().toList();
 
         List<VideoResponse> videos = videoService.searchVideos(4, search);

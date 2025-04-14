@@ -29,10 +29,10 @@ public class ArticleController {
     public ResponseEntity<Page<ArticleProjection2>> getAllArticles(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Long categoryId) {
+            @RequestParam(required = false) List<Long> categoryIds) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<ArticleProjection2> articles = articleService.getAllArticles(pageable, categoryId);
+        Page<ArticleProjection2> articles = articleService.getAllArticles(pageable, categoryIds);
         return ResponseEntity.ok(articles);
     }
 

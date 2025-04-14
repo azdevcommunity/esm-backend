@@ -9,4 +9,3 @@ public interface ArticleProjection {
     String getAuthorName();
     List<String> getCategories();
 }
-

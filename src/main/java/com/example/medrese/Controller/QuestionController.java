@@ -26,8 +26,9 @@ public class QuestionController {
                                              @RequestParam(name = "maxResult", defaultValue = "10", required = false) int size,
                                              @RequestParam(name = "tagIds", required = false) List<Integer> tagIds,
                                              @RequestParam(name = "containsTag",defaultValue = "0", required = false) int containsTag,
+                                             @RequestParam(name = "searchQuery", required = false) String search,
                                              @RequestParam(name = "containsCategory",defaultValue = "0", required = false) int containsCategory) {
-        return ResponseEntity.ok(questionService.getAllQuestions(page, size, tagIds, containsTag, containsCategory));
+        return ResponseEntity.ok(questionService.getAllQuestions(page, size, tagIds, containsTag, containsCategory,search));
     }
 
     @GetMapping("/{id}")

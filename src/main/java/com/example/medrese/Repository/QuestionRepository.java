@@ -20,18 +20,21 @@ import java.util.Optional;
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     @Query("""
-        SELECT DISTINCT new com.example.medrese.DTO.Response.QuestionSearchResponse(
-            q.id,
-            q.question,
-            q.answer,
-            q.createdDate
-        )
-        FROM Question q
-        LEFT JOIN QuestionTag qTag ON q.id = qTag.questionId
-        WHERE (:tagIds IS NULL OR qTag.tagId IN :tagIds)
-        order by q.createdDate desc
-    """)
-    Page<QuestionSearchResponse> searchAllQuestions(Pageable pageable, @Param("tagIds") List<Integer> tagIds);
+                SELECT DISTINCT new com.example.medrese.DTO.Response.QuestionSearchResponse(
+                    q.id,
+                    q.question,
+                    q.answer,
+                    q.createdDate
+                )
+                FROM Question q
+                LEFT JOIN QuestionTag qTag ON q.id = qTag.questionId
+                WHERE (:tagIds IS NULL OR qTag.tagId IN :tagIds)
+                    and ((:search IS NULL OR :search = '')
+                       OR (( LOWER(q.question) LIKE LOWER(CONCAT('%', :search, '%'))  ) or ( LOWER(q.answer) LIKE LOWER(CONCAT('%', :search, '%'))))
+                                       )
+                order by q.createdDate desc
+            """)
+    Page<QuestionSearchResponse> searchAllQuestions(Pageable pageable, @Param("tagIds") List<Integer> tagIds, String search);
 
 
     @Query("""
