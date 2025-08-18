@@ -6,9 +6,9 @@ spring:
       spec: maximumSize=1000, expireAfterWrite=10m
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${ESM_DB_URL:jdbc:postgresql://213.199.46.212/postgres}
-    username: ${ESM_DB_USERNAME:postgres}
-    password: ${ESM_DB_PASSWORD:123456789}
+    url: ${ESM_DB_URL}
+    username: ${ESM_DB_USERNAME}
+    password: ${ESM_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: none
