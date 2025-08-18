@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  IMAGE_NAME: ghcr.io/yusifhasanov/islamic-platform-api
+  IMAGE_NAME: ghcr.io/azdevcommunity/esm-backend
   APP_PORT: 8083
 
 jobs:
