@@ -56,9 +56,6 @@ jobs:
     needs: build-and-push
     environment: VPS
 
-
-
-
     steps:
 
       - name: Check secrets not empty
