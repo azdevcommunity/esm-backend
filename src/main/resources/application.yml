@@ -30,6 +30,14 @@ server:
   error:
     path: /error
   port: ${PORT:8088}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info      # sadece gerekli olanları aç
+  endpoint:
+    health:
+      show-details: never         # prod için detayları kapalı tut
 
 youtube:
   channel-id: UC1B8clCxtmb-bzCDdxmVPDA
