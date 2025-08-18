@@ -79,22 +79,22 @@ jobs:
 
             # === ENV dosyasını güvenle oluştur (shell quoting yok) ===
             cat >/root/medrese.env <<'EOF_ENV'
-  ESM_DB_URL=${{ secrets.ESM_DB_URL }}
-  ESM_DB_USERNAME=${{ secrets.ESM_DB_USERNAME }}
-  ESM_DB_PASSWORD=${{ secrets.ESM_DB_PASSWORD }}
-  SERVER_PORT=8080
-  EOF_ENV
-  
-  echo "[DEBUG] env file (masked):"
-  grep -E 'ESM_DB_URL|ESM_DB_USERNAME|SERVER_PORT' /root/medrese.env | sed 's/=.*/=****/'
-  
-  echo "Stopping container that uses port ${APP_PORT} if any..."
-  CONTAINER_USING_PORT=$(docker ps --format '{{.ID}} {{.Ports}}' | awk '/:'"$APP_PORT"'->/ {print $1}' | head -n1)
-  if [ -n "$CONTAINER_USING_PORT" ]; then
-  docker stop "$CONTAINER_USING_PORT" || true
-  fi
-  
-  NEW_NAME="medrese-backend-$(date +%s)"
+            ESM_DB_URL=${{ secrets.ESM_DB_URL }}
+            ESM_DB_USERNAME=${{ secrets.ESM_DB_USERNAME }}
+            ESM_DB_PASSWORD=${{ secrets.ESM_DB_PASSWORD }}
+            SERVER_PORT=8080
+            EOF_ENV
+            
+            echo "[DEBUG] env file (masked):"
+            grep -E 'ESM_DB_URL|ESM_DB_USERNAME|SERVER_PORT' /root/medrese.env | sed 's/=.*/=****/'
+            
+            echo "Stopping container that uses port ${APP_PORT} if any..."
+            CONTAINER_USING_PORT=$(docker ps --format '{{.ID}} {{.Ports}}' | awk '/:'"$APP_PORT"'->/ {print $1}' | head -n1)
+            if [ -n "$CONTAINER_USING_PORT" ]; then
+            docker stop "$CONTAINER_USING_PORT" || true
+            fi
+            
+            NEW_NAME="medrese-backend-$(date +%s)"
 echo "Starting new container: $NEW_NAME"
   
   docker run -d \
