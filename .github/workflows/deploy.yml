@@ -1,5 +1,6 @@
 name: Build & Deploy (Spring)
 
+
 on:
   push:
     branches: [ "main" ]
@@ -55,7 +56,18 @@ jobs:
     needs: build-and-push
     environment: VPS
 
+
+
+
     steps:
+
+      - name: Check secrets not empty
+        run: |
+          # Eğer boşsa net hata bastır
+          [ -n "${{ secrets.ESM_DB_URL }}" ]      || { echo "❌ ERROR: ESM_DB_URL is EMPTY in Environment 'VPS'"; exit 1; }
+          [ -n "${{ secrets.ESM_DB_USERNAME }}" ] || { echo "❌ ERROR: ESM_DB_USERNAME is EMPTY in Environment 'VPS'"; exit 1; }
+          [ -n "${{ secrets.ESM_DB_PASSWORD }}" ] || { echo "❌ ERROR: ESM_DB_PASSWORD is EMPTY in Environment 'VPS'"; exit 1; }
+
       - name: SSH into server and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
