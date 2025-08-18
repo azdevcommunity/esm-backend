@@ -21,7 +21,7 @@ public interface ArticleCategoryRepository extends JpaRepository<ArticleCategory
     void deleteByArticleIdInAndArticleId(List<Integer> ids, Integer id);
 
     @Modifying
-    @Query(value = "DELETE FROM esm.article_categories WHERE article_id = :articleId", nativeQuery = true)
+    @Query(value = "DELETE FROM article_categories WHERE article_id = :articleId", nativeQuery = true)
     void deleteByArticleId(@Param("articleId") Integer articleId);
 
     List<ArticleCategory> findByArticleId(int id);

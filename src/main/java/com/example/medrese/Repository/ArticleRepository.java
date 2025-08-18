@@ -26,24 +26,24 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
                         au.name AS authorName,
                         au.image AS authorImage,
                         STRING_AGG(c.name, ', ') AS categories
-                        FROM esm.articles a
-                        LEFT JOIN esm.authors au ON a.author_id = au.id
-                        LEFT JOIN esm.article_categories ac ON a.id = ac.article_id
-                        LEFT JOIN esm.categories c ON ac.category_id = c.id
+                        FROM articles a
+                        LEFT JOIN authors au ON a.author_id = au.id
+                        LEFT JOIN article_categories ac ON a.id = ac.article_id
+                        LEFT JOIN categories c ON ac.category_id = c.id
                         GROUP BY a.id, a.title, a.image, au.name, au.image, a.published_at
                         ORDER BY a.published_at DESC
             """,
-            countQuery = "SELECT COUNT(*) FROM esm.articles a",
+            countQuery = "SELECT COUNT(*) FROM articles a",
             nativeQuery = true)
     Page<ArticleProjection2> findAllArticlesWithAuthorsAndCategories(Pageable pageable);
 
     @Query(value = "WITH RECURSIVE category_tree AS ( " +
             "    SELECT id, parent_id " +
-            "    FROM esm.categories " +
+            "    FROM categories " +
             "    WHERE id IN (:categoryIds) " +  // Changed to IN to accept multiple category IDs
             "    UNION ALL " +
             "    SELECT c.id, c.parent_id " +
-            "    FROM esm.categories c " +
+            "    FROM categories c " +
             "    INNER JOIN category_tree ct ON c.parent_id = ct.id " +
             ") " +
             "SELECT a.id AS id, a.title AS title, a.image AS image, " +
@@ -51,26 +51,26 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             "       au.name  AS authorName, " +
             "       au.image  AS authorImage, " +
             "       STRING_AGG(c.name, ', ') AS categories " +
-            "FROM esm.articles a " +
-            "LEFT JOIN esm.authors au ON a.author_id = au.id " +
-            "LEFT JOIN esm.article_categories ac ON a.id = ac.article_id " +
-            "LEFT JOIN esm.categories c ON ac.category_id = c.id " +
+            "FROM articles a " +
+            "LEFT JOIN authors au ON a.author_id = au.id " +
+            "LEFT JOIN article_categories ac ON a.id = ac.article_id " +
+            "LEFT JOIN categories c ON ac.category_id = c.id " +
             "WHERE c.id IN (SELECT id FROM category_tree) " +
             "GROUP BY a.id, a.title, a.image, au.name, au.image, a.published_at " +
             "ORDER BY a.published_at DESC",
             countQuery = "WITH RECURSIVE category_tree AS ( " +
                     "    SELECT id, parent_id " +
-                    "    FROM esm.categories " +
+                    "    FROM categories " +
                     "    WHERE id IN (:categoryIds) " +  // Changed to IN to accept multiple category IDs
                     "    UNION ALL " +
                     "    SELECT c.id, c.parent_id " +
-                    "    FROM esm.categories c " +
+                    "    FROM categories c " +
                     "    INNER JOIN category_tree ct ON c.parent_id = ct.id " +
                     ") " +
                     "SELECT COUNT(*) " +
-                    "FROM esm.articles a " +
-                    "LEFT JOIN esm.article_categories ac ON a.id = ac.article_id " +
-                    "LEFT JOIN esm.categories c ON ac.category_id = c.id " +
+                    "FROM articles a " +
+                    "LEFT JOIN article_categories ac ON a.id = ac.article_id " +
+                    "LEFT JOIN categories c ON ac.category_id = c.id " +
                     "WHERE c.id IN (SELECT id FROM category_tree)",
             nativeQuery = true)
     Page<ArticleProjection2> findAllArticlesWithAuthorsAndCategories(Pageable pageable, @Param("categoryIds") List<Long> categoryIds);
@@ -83,10 +83,10 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
                au.name  AS authorName,
                au.image  AS authorImage,
                STRING_AGG(DISTINCT c.name, ', ') AS categories
-            FROM esm.articles a
-            LEFT JOIN esm.authors au ON a.author_id = au.id
-            LEFT JOIN esm.article_categories ac ON a.id = ac.article_id
-            LEFT JOIN esm.categories c ON ac.category_id = c.id
+            FROM articles a
+            LEFT JOIN authors au ON a.author_id = au.id
+            LEFT JOIN article_categories ac ON a.id = ac.article_id
+            LEFT JOIN categories c ON ac.category_id = c.id
             WHERE
                (
                  -- If search is empty, show all
@@ -106,10 +106,10 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
             countQuery = """
     SELECT
        COUNT(DISTINCT a.id)
-    FROM esm.articles a
-    LEFT JOIN esm.authors au ON a.author_id = au.id
-    LEFT JOIN esm.article_categories ac ON a.id = ac.article_id
-    LEFT JOIN esm.categories c ON ac.category_id = c.id
+    FROM articles a
+    LEFT JOIN authors au ON a.author_id = au.id
+    LEFT JOIN article_categories ac ON a.id = ac.article_id
+    LEFT JOIN categories c ON ac.category_id = c.id
     WHERE
        (
          (:search IS NULL OR :search = '')
@@ -135,8 +135,8 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
                    a.published_at AS publishedAt,
                    au.name AS authorName,
                    au.image AS authorImage
-            FROM esm.articles a
-            LEFT JOIN esm.authors au ON a.author_id = au.id
+            FROM articles a
+            LEFT JOIN authors au ON a.author_id = au.id
             ORDER BY a.read_count DESC
             LIMIT ?1
             """,
@@ -146,7 +146,7 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
 
     @Query(value = """
             SELECT a.id AS id
-                    FROM esm.articles a
+                    FROM articles a
             """
             ,
             nativeQuery = true)
