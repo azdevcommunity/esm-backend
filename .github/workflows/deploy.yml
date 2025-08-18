@@ -11,7 +11,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    environment: VPS                  # <-- Environment adı repo Settings > Environments > VPS ile birebir aynı
+    environment: VPS
     permissions:
       contents: read
       packages: write
@@ -30,8 +30,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ secrets.GHCR_USERNAME }}   # PAT sahibi kullanıcı
-          password: ${{ secrets.GHCR_TOKEN }}      # write:packages yetkili PAT (veya GITHUB_TOKEN da kullanılabilir)
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Extract metadata (tags, labels)
         id: meta
@@ -53,7 +53,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
-    environment: VPS                  # <-- Aynı environment
+    environment: VPS
 
     steps:
       - name: SSH into server and deploy
@@ -65,7 +65,6 @@ jobs:
           script: |
             set -e
 
-            # Ağ mevcut değilse oluştur
             docker network ls | grep -q '^esm_network' || docker network create esm_network
 
             IMAGE="${{ env.IMAGE_NAME }}:latest"
@@ -77,52 +76,47 @@ jobs:
             echo "Pulling latest image: $IMAGE"
             docker pull "$IMAGE"
 
-            # === ENV dosyasını güvenle oluştur (shell quoting yok) ===
-            cat >/root/medrese.env <<'EOF_ENV'
-            ESM_DB_URL=${{ secrets.ESM_DB_URL }}
-            ESM_DB_USERNAME=${{ secrets.ESM_DB_USERNAME }}
-            ESM_DB_PASSWORD=${{ secrets.ESM_DB_PASSWORD }}
-            SERVER_PORT=8080
-            EOF_ENV
-            
+            echo "Write env file safely"
+            printf "%s\n" \
+              "ESM_DB_URL=${{ secrets.ESM_DB_URL }}" \
+              "ESM_DB_USERNAME=${{ secrets.ESM_DB_USERNAME }}" \
+              "ESM_DB_PASSWORD=${{ secrets.ESM_DB_PASSWORD }}" \
+              "SERVER_PORT=8080" \
+              > /root/medrese.env
+
             echo "[DEBUG] env file (masked):"
-            grep -E 'ESM_DB_URL|ESM_DB_USERNAME|SERVER_PORT' /root/medrese.env | sed 's/=.*/=****/'
-            
-            echo "Stopping container that uses port ${APP_PORT} if any..."
+            grep -E '^(ESM_DB_URL|ESM_DB_USERNAME|SERVER_PORT)=' /root/medrese.env | sed 's/=.*/=****/'
+
+            echo "Stop container using ${APP_PORT} if any"
             CONTAINER_USING_PORT=$(docker ps --format '{{.ID}} {{.Ports}}' | awk '/:'"$APP_PORT"'->/ {print $1}' | head -n1)
-            if [ -n "$CONTAINER_USING_PORT" ]; then
-            docker stop "$CONTAINER_USING_PORT" || true
-            fi
-            
+            [ -n "$CONTAINER_USING_PORT" ] && docker stop "$CONTAINER_USING_PORT" || true
+
             NEW_NAME="medrese-backend-$(date +%s)"
-echo "Starting new container: $NEW_NAME"
-  
-  docker run -d \
-  --name "$NEW_NAME" \
-  --env-file /root/medrese.env \
-  -p ${APP_PORT}:8080 \
-  -v /var/www/esm/uploads:/app/uploads \
-  --network esm_network \
-  --add-host=host.docker.internal:host-gateway \
-  --network-alias medrese-backend-app \
-  "$IMAGE"
-  
-  echo "[DEBUG] Container Env (masked):"
-  docker inspect "$NEW_NAME" --format '{{range .Config.Env}}{{println .}}{{end}}' \
-  | grep -E '^ESM_DB_URL=|^ESM_DB_USERNAME=|^SERVER_PORT=' \
-  | sed 's/ESM_DB_PASSWORD=.*/ESM_DB_PASSWORD=****/'
-  
-  echo "Health check"
-  for i in $(seq 1 30); do
-  if curl -fsS "http://127.0.0.1:${APP_PORT}/actuator/health" >/dev/null 2>&1; then
-  echo "UP"
-  break
-  fi
-  sleep 1
-  done
-  
-  echo "Cleanup old exited containers"
-  docker ps -a --filter 'status=exited' --filter 'name=medrese-backend-' --format '{{.ID}}' | xargs -r docker rm
-  
-  echo "Prune dangling images"
-  docker image prune -f
+            echo "Run $NEW_NAME"
+
+            docker run -d \
+              --name "$NEW_NAME" \
+              --env-file /root/medrese.env \
+              -p ${APP_PORT}:8080 \
+              -v /var/www/esm/uploads:/app/uploads \
+              --network esm_network \
+              --add-host=host.docker.internal:host-gateway \
+              --network-alias medrese-backend-app \
+              "$IMAGE"
+
+            echo "[DEBUG] Container Env (masked):"
+            docker inspect "$NEW_NAME" --format '{{range .Config.Env}}{{println .}}{{end}}' \
+              | grep -E '^(ESM_DB_URL|ESM_DB_USERNAME|SERVER_PORT)=' \
+              | sed 's/ESM_DB_PASSWORD=.*/ESM_DB_PASSWORD=****/'
+
+            echo "Health check"
+            for i in $(seq 1 30); do
+              curl -fsS "http://127.0.0.1:${APP_PORT}/actuator/health" >/dev/null 2>&1 && { echo "UP"; break; }
+              sleep 1
+            done
+
+            echo "Cleanup old exited"
+            docker ps -a --filter 'status=exited' --filter 'name=medrese-backend-' --format '{{.ID}}' | xargs -r docker rm
+
+            echo "Prune dangling images"
+            docker image prune -f
