@@ -11,7 +11,7 @@ RUN chmod +x /app/gradlew && sed -i 's/\r$//' /app/gradlew
 # (opsiyonel ama faydalı) bağımlılıkları önceden indir, cache ısınsın
 RUN ./gradlew --no-daemon dependencies || true
 
-# kaynak kod
+# kaynak   kod
 COPY src /app/src
 
 # build
