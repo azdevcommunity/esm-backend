@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  IMAGE_NAME: ghcr.io/azdevcommunity/medrese-backend-app
+  IMAGE_NAME: ghcr.io/yusifhasanov/islamic-platform-api
   APP_PORT: 8083
 
 jobs:
