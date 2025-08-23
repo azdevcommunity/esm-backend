@@ -75,15 +75,15 @@ public class QuestionService {
     @Transactional
     public QuestionResponse createQuestion(CreateQuestionDTO createQuestionDTO) {
         //TODO:helelik
-        createQuestionDTO.setAuthor(2);
-
-        if (Objects.nonNull(createQuestionDTO.getAuthor())) {
-            authorService.getAuthorById(createQuestionDTO.getAuthor());
-        }
+//        createQuestionDTO.setAuthor(2);
+//
+//        if (Objects.nonNull(createQuestionDTO.getAuthor())) {
+//            authorService.getAuthorById(createQuestionDTO.getAuthor());
+//        }
 
         Question question = questionMapper.toEntity(createQuestionDTO);
         question = questionRepository.save(question);
-        question.setAuthorId(createQuestionDTO.getAuthor());
+//        question.setAuthorId(createQuestionDTO.getAuthor());
 
         for (Integer category : createQuestionDTO.getCategories()) {
             if (!categoryRepository.existsById(category)) {
