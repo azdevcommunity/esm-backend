@@ -22,6 +22,6 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/medrese-0.0.1.jar /app/app.jar
 VOLUME /app/uploads
-EXPOSE 8080
-HEALTHCHECK CMD curl -f http://localhost:8080/actuator/health || exit 1
-ENTRYPOINT ["sh","-c","java -XX:MaxRAMPercentage=75 -Dserver.port=${SERVER_PORT:-8080} -jar /app/app.jar"]
+EXPOSE 8088
+HEALTHCHECK CMD curl -f http://localhost:8088/actuator/health || exit 1
+ENTRYPOINT ["sh","-c","java -XX:MaxRAMPercentage=75 -Dserver.port=${SERVER_PORT:-8088} -jar /app/app.jar"]
