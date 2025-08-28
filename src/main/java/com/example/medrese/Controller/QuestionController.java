@@ -57,4 +57,9 @@ public class QuestionController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getQuestionStatistics() {
+        return ResponseEntity.ok(questionService.getQuestionStatistics());
+    }
+
 }
