@@ -136,8 +136,17 @@ public class QuestionService {
         Long totalQuestions = questionRepository.count();
         Long totalCategories = questionRepository.countDistinctCategoriesUsedInQuestions();
         Long totalTags = questionRepository.countDistinctTagsUsedInQuestions();
+        Long totalViewCount = questionRepository.getTotalViewCount();
 
-        return new QuestionStatisticsResponse(totalQuestions, totalCategories, totalTags);
+        return new QuestionStatisticsResponse(totalQuestions, totalCategories, totalTags, totalViewCount);
+    }
+
+    @Transactional
+    public void incrementQuestionViewCount(Integer questionId) {
+        if (!questionRepository.existsById(questionId)) {
+            throw new QuestionNotFoundException("Question not found with id " + questionId);
+        }
+        questionRepository.incrementViewCount(questionId);
     }
 }
 

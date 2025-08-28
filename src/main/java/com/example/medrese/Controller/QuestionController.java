@@ -62,4 +62,10 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getQuestionStatistics());
     }
 
+    @PutMapping("/{id}/increment-view")
+    public ResponseEntity<Void> incrementQuestionViewCount(@PathVariable Integer id) {
+        questionService.incrementQuestionViewCount(id);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -15,4 +15,5 @@ public class QuestionStatisticsResponse {
     Long totalQuestions;
     Long totalCategories;
     Long totalTags;
+    Long totalViewCount;
 }
