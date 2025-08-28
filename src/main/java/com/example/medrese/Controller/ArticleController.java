@@ -4,11 +4,10 @@ import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.DeleteArticles;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleIdProjection;
-import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.ArticleResponse;
+import com.example.medrese.DTO.Response.ArticleStatisticsResponse;
 import com.example.medrese.Model.Article;
-import com.example.medrese.Model.Author;
 import com.example.medrese.Service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -54,6 +52,12 @@ public class ArticleController {
     @GetMapping("/popular")
     public ResponseEntity<?> getPopularArticles() {
         return ResponseEntity.ok(articleService.getPopularArticles());
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<ArticleStatisticsResponse> getArticleStatistics() {
+        ArticleStatisticsResponse statistics = articleService.getArticleStatistics();
+        return ResponseEntity.ok(statistics);
     }
 
     @PutMapping("/count/{id}")

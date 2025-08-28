@@ -4,6 +4,7 @@ import com.example.medrese.DTO.Response.ArticleIdProjection;
 import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.PopularArticleProjection;
 import com.example.medrese.Model.Article;
+import com.example.medrese.Model.ArticleCategory;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -158,4 +159,16 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
     void incrementReadCount(@Param("id") Integer id);
 
     boolean existsByAuthorId(Integer id);
+
+    @Query("SELECT COUNT(a) FROM Article a")
+    Long countTotalArticles();
+
+    @Query("SELECT COUNT(DISTINCT ac.categoryId) FROM ArticleCategory ac")
+    Long countDistinctCategories();
+
+    @Query("SELECT COUNT(DISTINCT a.authorId) FROM Article a")
+    Long countDistinctAuthors();
+
+    @Query("SELECT COALESCE(SUM(a.readCount), 0) FROM Article a")
+    Long sumTotalReadCount();
 }

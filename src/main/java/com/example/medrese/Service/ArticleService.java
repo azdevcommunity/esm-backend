@@ -5,9 +5,9 @@ import com.example.medrese.DTO.Request.Create.CreateArticleDTO;
 import com.example.medrese.DTO.Request.Update.DeleteArticles;
 import com.example.medrese.DTO.Request.Update.UpdateArticle;
 import com.example.medrese.DTO.Response.ArticleIdProjection;
-import com.example.medrese.DTO.Response.ArticleProjection;
 import com.example.medrese.DTO.Response.ArticleProjection2;
 import com.example.medrese.DTO.Response.ArticleResponse;
+import com.example.medrese.DTO.Response.ArticleStatisticsResponse;
 import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.DTO.Response.PopularArticleProjection;
 import com.example.medrese.Model.Article;
@@ -209,5 +209,14 @@ public class ArticleService {
             return articleRepository.findAllArticlesWithAuthorsAndCategoriesBySearch(search,pageable);
         }
 
+    }
+
+    public ArticleStatisticsResponse getArticleStatistics() {
+        Long totalArticles = articleRepository.countTotalArticles();
+        Long totalCategories = articleRepository.countDistinctCategories();
+        Long totalAuthors = articleRepository.countDistinctAuthors();
+        Long totalReadCount = articleRepository.sumTotalReadCount();
+
+        return new ArticleStatisticsResponse(totalArticles, totalCategories, totalAuthors, totalReadCount);
     }
 }
