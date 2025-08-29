@@ -8,7 +8,9 @@ import com.example.medrese.DTO.Request.Update.UpdateVideo;
 import com.example.medrese.DTO.Response.PaginitionVideosResponse;
 import com.example.medrese.DTO.Response.VideoResponse;
 import com.example.medrese.DTO.Response.VideoStatisticsResponse;
+import com.example.medrese.Model.ChannelStat;
 import com.example.medrese.Model.Video;
+import com.example.medrese.Repository.ChannelStatRepository;
 import com.example.medrese.Repository.PlaylistRepository;
 import com.example.medrese.Repository.VideoRepository;
 import com.example.medrese.mapper.VideoMapper;
@@ -44,6 +46,7 @@ public class VideoService {
     VideoRepository videoRepository;
     VideoMapper videoMapper;
     PlaylistRepository playlistRepository;
+    ChannelStatRepository channelStatRepository;
     //    private static YouTube.Search.List request;
     private static final YouTube.Search.List request;
     private static final YouTube.Playlists.List requestPlayList;
@@ -459,11 +462,15 @@ public class VideoService {
     }
 
     public VideoStatisticsResponse getVideoStatistics() {
-        long videoCount = videoRepository.countRegularVideos();
-        long playlistCount = playlistRepository.countActivePlaylist();
-        long shortVideoCount = videoRepository.countShortVideos();
-        long viewCount = 100000L; // Statik 100k
+        // ChannelStat'dan en son verileri al
+        ChannelStat channelStat = channelStatRepository.findLatestChannelStat()
+                .orElse(new ChannelStat()); // Eğer veri yoksa boş nesne döndür
         
-        return new VideoStatisticsResponse(videoCount, playlistCount, shortVideoCount, viewCount);
+        long videoCount = videoRepository.countActiveVideos();
+        long viewCount = channelStat.getViewCount() != null ? channelStat.getViewCount() : 0L;
+        long subscriberCount = channelStat.getSubscriberCount() != null ? channelStat.getSubscriberCount() : 0L;
+        long playlistCount = playlistRepository.countActivePlaylist();
+        
+        return new VideoStatisticsResponse(videoCount, viewCount, playlistCount, subscriberCount);
     }
 }

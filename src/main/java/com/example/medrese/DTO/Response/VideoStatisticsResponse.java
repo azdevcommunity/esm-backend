@@ -12,8 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VideoStatisticsResponse {
     
-    long videoCount;        // isShort=false olan videoların sayısı
+    long videoCount;        // ChannelStat'dan video sayısı
+    long viewCount;         // ChannelStat'dan view count
     long playlistCount;     // playlist sayısı
-    long shortVideoCount;   // isShort=true olan videoların sayısı
-    long viewCount;         // statik 100k
+    long subscriberCount;   // ChannelStat'dan subscriber count
 }
