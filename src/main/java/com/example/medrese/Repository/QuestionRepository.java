@@ -30,13 +30,15 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
                 )
                 FROM Question q
                 LEFT JOIN QuestionTag qTag ON q.id = qTag.questionId
+                LEFT JOIN QuestionCategory qCat ON q.id = qCat.questionId
                 WHERE (:tagIds IS NULL OR qTag.tagId IN :tagIds)
+                    AND (:categoryIds IS NULL OR qCat.categoryId IN :categoryIds)
                     and ((:search IS NULL OR :search = '')
                        OR (( LOWER(q.question) LIKE LOWER(CONCAT('%', :search, '%'))  ) or ( LOWER(q.answer) LIKE LOWER(CONCAT('%', :search, '%'))))
                                        )
                 order by q.createdDate desc
             """)
-    Page<QuestionSearchResponse> searchAllQuestions(Pageable pageable, @Param("tagIds") List<Integer> tagIds, String search);
+    Page<QuestionSearchResponse> searchAllQuestions(Pageable pageable, @Param("tagIds") List<Integer> tagIds, @Param("categoryIds") List<Integer> categoryIds, String search);
 
 
     @Query("""

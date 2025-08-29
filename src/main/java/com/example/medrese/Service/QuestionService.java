@@ -41,11 +41,13 @@ public class QuestionService {
     AuthorService authorService;
     CategoryRepository categoryRepository;
 
-    public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, int containsTag, int containsCategory, String search) {
+    public Page<?> getAllQuestions(int page, int size, List<Integer> tagIds, List<Integer> categoryIds, int containsTag, int containsCategory, String search) {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<QuestionSearchResponse> questionPage = questionRepository.searchAllQuestions(pageable,
-                ObjectUtils.isEmpty(tagIds) ? null : tagIds, search
+                ObjectUtils.isEmpty(tagIds) ? null : tagIds, 
+                ObjectUtils.isEmpty(categoryIds) ? null : categoryIds, 
+                search
         );
 
         if(containsTag == 1 || containsCategory == 1){

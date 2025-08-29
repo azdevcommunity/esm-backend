@@ -25,10 +25,11 @@ public class QuestionController {
     public ResponseEntity<?> getAllQuestions(@RequestParam(defaultValue = "0", required = false) int page,
                                              @RequestParam(name = "maxResult", defaultValue = "10", required = false) int size,
                                              @RequestParam(name = "tagIds", required = false) List<Integer> tagIds,
+                                             @RequestParam(name = "categoryIds", required = false) List<Integer> categoryIds,
                                              @RequestParam(name = "containsTag",defaultValue = "0", required = false) int containsTag,
                                              @RequestParam(name = "searchQuery", required = false) String search,
                                              @RequestParam(name = "containsCategory",defaultValue = "0", required = false) int containsCategory) {
-        return ResponseEntity.ok(questionService.getAllQuestions(page, size, tagIds, containsTag, containsCategory,search));
+        return ResponseEntity.ok(questionService.getAllQuestions(page, size, tagIds, categoryIds, containsTag, containsCategory, search));
     }
 
     @GetMapping("/{id}")
