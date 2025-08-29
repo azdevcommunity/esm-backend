@@ -57,4 +57,13 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
             ORDER BY MAX(v.publishedAt) DESC
             """)
     List<Playlist> findAllOrderByLatestVideoWithSearch(@Param("search") String search);
+
+    @Query("""
+            SELECT COUNT(DISTINCT p)
+            FROM Playlist p
+            JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
+            JOIN Video v ON pv.videoId = v.videoId
+            WHERE v.publishedAt IS NOT NULL and v.isPrivate = false
+            """)
+    long countActivePlaylist();
 }

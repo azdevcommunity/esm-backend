@@ -5,6 +5,7 @@ import com.example.medrese.Core.Util.Exceptions.QuestionNotFoundException;
 import com.example.medrese.DTO.Request.Create.CreateQuestionDTO;
 import com.example.medrese.DTO.Response.QuestionResponse;
 import com.example.medrese.DTO.Response.QuestionSearchResponse;
+import com.example.medrese.DTO.Response.QuestionStatisticsResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Model.QuestionCategory;
 import com.example.medrese.Model.QuestionTag;
@@ -129,6 +130,23 @@ public class QuestionService {
         questionTagRepository.deleteByQuestionId(id);
         questionRepository.deleteById(id);
 
+    }
+
+    public QuestionStatisticsResponse getQuestionStatistics() {
+        Long totalQuestions = questionRepository.count();
+        Long totalCategories = questionRepository.countDistinctCategoriesUsedInQuestions();
+        Long totalTags = questionRepository.countDistinctTagsUsedInQuestions();
+        Long totalViewCount = questionRepository.getTotalViewCount();
+
+        return new QuestionStatisticsResponse(totalQuestions, totalCategories, totalTags, totalViewCount);
+    }
+
+    @Transactional
+    public void incrementQuestionViewCount(Integer questionId) {
+        if (!questionRepository.existsById(questionId)) {
+            throw new QuestionNotFoundException("Question not found with id " + questionId);
+        }
+        questionRepository.incrementViewCount(questionId);
     }
 }
 

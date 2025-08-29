@@ -92,4 +92,9 @@ public class VideoController {
     public ResponseEntity<?> getLatestVideo() {
         return ResponseEntity.ok(videoService.getLatestVideo());
     }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getVideoStatistics() {
+        return ResponseEntity.ok(videoService.getVideoStatistics());
+    }
 }

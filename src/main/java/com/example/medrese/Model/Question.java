@@ -42,8 +42,14 @@ public class Question  {
     @Column(name = "created_date")
     LocalDateTime createdDate;
 
+    @Column(name = "view_count", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    Integer viewCount = 0;
+
     @PrePersist
     protected void onCreate() {
         createdDate = DateUtil.getCurrentDateTime();
+        if (viewCount == null) {
+            viewCount = 0;
+        }
     }
 }
