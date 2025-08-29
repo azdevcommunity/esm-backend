@@ -25,7 +25,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
                     q.id,
                     q.question,
                     q.answer,
-                    q.createdDate
+                    q.createdDate,
+                    q.viewCount
                 )
                 FROM Question q
                 LEFT JOIN QuestionTag qTag ON q.id = qTag.questionId
@@ -59,7 +60,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
                     q.id,
                     q.question,
                     q.answer,
-                    q.createdDate
+                    q.createdDate,
+                    q.viewCount
                 )
                 FROM Question q
                 where q.id = :questionId

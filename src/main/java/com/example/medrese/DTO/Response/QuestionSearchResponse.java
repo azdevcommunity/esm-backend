@@ -20,6 +20,7 @@ public class QuestionSearchResponse {
     String question;
     String answer;
     LocalDateTime createdDate;
+    Integer viewCount;
     List<QuestionCategory> categories;
     List<QuestionTagResponse> tags;
 
@@ -34,6 +35,14 @@ public class QuestionSearchResponse {
         this.question = question;
         this.answer = answer;
         this.createdDate = createdDate;
+    }
+
+    public QuestionSearchResponse(int id, String question, String answer, LocalDateTime createdDate, Integer viewCount ) {
+        this.id = id;
+        this.question = question;
+        this.answer = answer;
+        this.createdDate = createdDate;
+        this.viewCount = viewCount;
     }
 
     public QuestionSearchResponse(int id, String question, String answer, Object categories, Object tags) {
