@@ -44,13 +44,7 @@ public class QuestionSearchResponse {
         this.viewCount = viewCount;
     }
 
-    public QuestionSearchResponse(int id, String question, String answer, Object categories, Object tags) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
-        this.categories = (List<QuestionCategory>) categories;
-        this.tags = (List<QuestionTagResponse>) tags;
-    }
+
 }
 
 
