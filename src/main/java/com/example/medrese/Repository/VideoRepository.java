@@ -169,4 +169,10 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                         LIMIT 1 
             """, nativeQuery = true)
     VideoResponse findLatestVideo();
+
+    @Query("SELECT COUNT(v) FROM Video v WHERE v.isPrivate = false AND v.isShort = false")
+    long countRegularVideos();
+
+    @Query("SELECT COUNT(v) FROM Video v WHERE v.isPrivate = false AND v.isShort = true")
+    long countShortVideos();
 }

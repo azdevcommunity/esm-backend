@@ -7,7 +7,9 @@ import com.example.medrese.Core.Util.Rules.CheckIds;
 import com.example.medrese.DTO.Request.Update.UpdateVideo;
 import com.example.medrese.DTO.Response.PaginitionVideosResponse;
 import com.example.medrese.DTO.Response.VideoResponse;
+import com.example.medrese.DTO.Response.VideoStatisticsResponse;
 import com.example.medrese.Model.Video;
+import com.example.medrese.Repository.PlaylistRepository;
 import com.example.medrese.Repository.VideoRepository;
 import com.example.medrese.mapper.VideoMapper;
 import com.google.api.services.youtube.YouTube;
@@ -41,6 +43,7 @@ public class VideoService {
 
     VideoRepository videoRepository;
     VideoMapper videoMapper;
+    PlaylistRepository playlistRepository;
     //    private static YouTube.Search.List request;
     private static final YouTube.Search.List request;
     private static final YouTube.Playlists.List requestPlayList;
@@ -453,5 +456,14 @@ public class VideoService {
 
     public VideoResponse getLatestVideo() {
        return videoRepository.findLatestVideo();
+    }
+
+    public VideoStatisticsResponse getVideoStatistics() {
+        long videoCount = videoRepository.countRegularVideos();
+        long playlistCount = playlistRepository.countActivePlaylist();
+        long shortVideoCount = videoRepository.countShortVideos();
+        long viewCount = 100000L; // Statik 100k
+        
+        return new VideoStatisticsResponse(videoCount, playlistCount, shortVideoCount, viewCount);
     }
 }
