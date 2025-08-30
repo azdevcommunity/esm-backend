@@ -109,5 +109,33 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
     @Query("SELECT COALESCE(SUM(q.viewCount), 0) FROM Question q")
     Long getTotalViewCount();
 
+    @Query("""
+            SELECT DISTINCT q.id, q.question, q.viewCount, q.createdDate
+            FROM Question q
+            WHERE q.id != :questionId
+            AND (
+                q.id IN (
+                    SELECT qt1.questionId
+                    FROM QuestionTag qt1
+                    WHERE qt1.tagId IN (
+                        SELECT qt2.tagId
+                        FROM QuestionTag qt2
+                        WHERE qt2.questionId = :questionId
+                    )
+                )
+                OR q.id IN (
+                    SELECT qc1.questionId
+                    FROM QuestionCategory qc1
+                    WHERE qc1.categoryId IN (
+                        SELECT qc2.categoryId
+                        FROM QuestionCategory qc2
+                        WHERE qc2.questionId = :questionId
+                    )
+                )
+            )
+            ORDER BY q.viewCount DESC, q.createdDate DESC
+            """)
+    List<Object[]> findRelatedQuestionsByTagsAndCategories(@Param("questionId") Integer questionId, Pageable pageable);
+
     }
 

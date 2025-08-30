@@ -6,6 +6,8 @@ import com.example.medrese.DTO.Request.Create.CreateQuestionDTO;
 import com.example.medrese.DTO.Response.QuestionResponse;
 import com.example.medrese.DTO.Response.QuestionSearchResponse;
 import com.example.medrese.DTO.Response.QuestionStatisticsResponse;
+import com.example.medrese.DTO.Response.QuestionTagResponse;
+import com.example.medrese.DTO.Response.RelatedQuestionResponse;
 import com.example.medrese.Model.Question;
 import com.example.medrese.Model.QuestionCategory;
 import com.example.medrese.Model.QuestionTag;
@@ -149,6 +151,29 @@ public class QuestionService {
             throw new QuestionNotFoundException("Question not found with id " + questionId);
         }
         questionRepository.incrementViewCount(questionId);
+    }
+
+    public List<RelatedQuestionResponse> getRelatedQuestions(Integer questionId) {
+        if (!questionRepository.existsById(questionId)) {
+            throw new QuestionNotFoundException("Question not found with id " + questionId);
+        }
+
+        Pageable pageable = PageRequest.of(0, 4);
+        List<Object[]> relatedQuestionsData = questionRepository.findRelatedQuestionsByTagsAndCategories(questionId, pageable);
+
+        List<RelatedQuestionResponse> relatedQuestions = new ArrayList<>();
+
+        for (Object[] data : relatedQuestionsData) {
+            Integer id = (Integer) data[0];
+            String question = (String) data[1];
+
+            List<QuestionTagResponse> tags = questionRepository.findAllTagsByQuestion(id);
+
+            RelatedQuestionResponse relatedQuestion = new RelatedQuestionResponse(id, question, tags);
+            relatedQuestions.add(relatedQuestion);
+        }
+
+        return relatedQuestions;
     }
 }
 
