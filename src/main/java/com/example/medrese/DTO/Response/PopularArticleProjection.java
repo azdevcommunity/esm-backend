@@ -8,4 +8,5 @@ public interface PopularArticleProjection {
     String getPublishedAt();
     String getAuthorName();
     String getAuthorImage();
+    Long getReadCount();
 }

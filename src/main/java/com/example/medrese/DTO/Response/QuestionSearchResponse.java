@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class QuestionSearchResponse {
@@ -20,6 +19,7 @@ public class QuestionSearchResponse {
     String question;
     String answer;
     LocalDateTime createdDate;
+    Integer viewCount;
     List<QuestionCategory> categories;
     List<QuestionTagResponse> tags;
 
@@ -36,13 +36,15 @@ public class QuestionSearchResponse {
         this.createdDate = createdDate;
     }
 
-    public QuestionSearchResponse(int id, String question, String answer, Object categories, Object tags) {
+    public QuestionSearchResponse(int id, String question, String answer, LocalDateTime createdDate, Integer viewCount ) {
         this.id = id;
         this.question = question;
         this.answer = answer;
-        this.categories = (List<QuestionCategory>) categories;
-        this.tags = (List<QuestionTagResponse>) tags;
+        this.createdDate = createdDate;
+        this.viewCount = viewCount;
     }
+
+
 }
 
 

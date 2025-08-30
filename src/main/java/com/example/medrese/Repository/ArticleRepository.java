@@ -135,7 +135,8 @@ public interface ArticleRepository extends JpaRepository<Article, Integer> {
                    a.image AS image,
                    a.published_at AS publishedAt,
                    au.name AS authorName,
-                   au.image AS authorImage
+                   au.image AS authorImage,
+                   a.read_count AS readCount
             FROM articles a
             LEFT JOIN authors au ON a.author_id = au.id
             ORDER BY a.read_count DESC
