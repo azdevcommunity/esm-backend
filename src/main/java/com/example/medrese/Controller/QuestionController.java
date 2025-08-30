@@ -69,4 +69,9 @@ public class QuestionController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}/related")
+    public ResponseEntity<?> getRelatedQuestions(@PathVariable Integer id) {
+        return ResponseEntity.ok(questionService.getRelatedQuestions(id));
+    }
+
 }
