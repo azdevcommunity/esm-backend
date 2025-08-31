@@ -21,10 +21,10 @@ public class QuestionTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "tag_id")
+    @Column(name = "tag_id", nullable = false)
     Integer tagId;
 
-    @Column(name = "question_id")
+    @Column(name = "question_id", nullable = false)
     Integer questionId;
 
 }
