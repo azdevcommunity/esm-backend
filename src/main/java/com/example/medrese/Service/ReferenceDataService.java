@@ -30,14 +30,14 @@ public class ReferenceDataService {
 
         categoryRepository.save(Category.builder().name("Matrudi Mədrəsəsi").parentId(etiqad.getId()).isActive(true).build());
         categoryRepository.save(Category.builder().name("Əşari Mədrəsəsi").parentId(etiqad.getId()).isActive(true).build());
-        categoryRepository.save(Category.builder().name("Əsari Mədrəsəsi").parentId(etiqad.getId()).isActive(false).build());
+        categoryRepository.save(Category.builder().name("Əsari Mədrəsəsi").parentId(etiqad.getId()).isActive(true).build());
 
         Category fiqh = categoryRepository.save(Category.builder().name("Fiqh").parentId(islamEtiqadiVeFiqhi.getId()).isActive(true).build());
 
         categoryRepository.save(Category.builder().name("Hənəfi Məzhəbi").parentId(fiqh.getId()).isActive(true).build());
-        categoryRepository.save(Category.builder().name("Maliki Məzhəbi").parentId(fiqh.getId()).isActive(false).build());
+        categoryRepository.save(Category.builder().name("Maliki Məzhəbi").parentId(fiqh.getId()).isActive(true).build());
         categoryRepository.save(Category.builder().name("Şafei Məzhəbi").parentId(fiqh.getId()).isActive(true).build());
-        categoryRepository.save(Category.builder().name("Hənbəli Məzhəbi").parentId(fiqh.getId()).isActive(false).build());
+        categoryRepository.save(Category.builder().name("Hənbəli Məzhəbi").parentId(fiqh.getId()).isActive(true).build());
 
         categoryRepository.save(Category.builder().name("Qurani Kərim Dərsləri").parentId(islamElmleri.getId()).build());
 

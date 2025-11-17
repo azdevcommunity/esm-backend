@@ -96,10 +96,10 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
             nativeQuery = true)
     Page<QuestionSearchProjection> searchAllQuestionsOptimized(Pageable pageable);
 
-    @Query("SELECT COUNT(DISTINCT qc.categoryId) FROM QuestionCategory qc")
+    @Query(value = "SELECT COUNT(DISTINCT category_id) FROM question_categories", nativeQuery = true)
     Long countDistinctCategoriesUsedInQuestions();
 
-    @Query("SELECT COUNT(DISTINCT qt.tagId) FROM QuestionTag qt")
+    @Query(value = "SELECT COUNT(DISTINCT tag_id) FROM question_tags", nativeQuery = true)
     Long countDistinctTagsUsedInQuestions();
 
     @Modifying

@@ -42,4 +42,7 @@ public class Playlist  {
 
     @Column(name = "video_count")
     Long videoCount;
+
+    @Column(name = "is_old_channel")
+    Boolean isOldChannel;
 }
