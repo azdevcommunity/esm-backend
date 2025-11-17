@@ -52,4 +52,6 @@ public class Video  {
 //    @JoinColumn(name = "playlist_id")
 //    String playlistId;
 
+    @Column(name = "is_old_channel")
+    Boolean isOldChannel;
 }
