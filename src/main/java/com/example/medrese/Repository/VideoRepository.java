@@ -25,7 +25,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             SELECT v
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            WHERE pv.playlistId = :playlistId and v.isPrivate = false
+            WHERE pv.playlistId = :playlistId and v.isPrivate = false and v.isOldChannel = false
             """)
     Page<Video> findVideosByPlaylistId(@Param("playlistId") String playlistId, Pageable pageable);
 
@@ -40,7 +40,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            WHERE pv.playlistId = :playlistId and v.isPrivate = false
+            WHERE pv.playlistId = :playlistId and v.isPrivate = false and v.isOldChannel = false
             """)
     List<VideoResponse> findAllByPlaylistId(@Param("playlistId") String playlistId, Sort sort);
 
@@ -57,7 +57,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            WHERE pv.playlistId = :playlistId and v.isPrivate = false
+            WHERE pv.playlistId = :playlistId and v.isPrivate = false and v.isOldChannel = false
             ORDER BY v.publishedAt DESC
             """)
     List<VideoResponse> findAllByPlaylistIdOrderByPublishedAtDesc(@Param("playlistId") String playlistId);
@@ -76,7 +76,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             FROM Video v
             LEFT JOIN PlaylistVideo pv ON v.videoId = pv.videoId
             LEFT JOIN Playlist p ON pv.playlistId = p.playlistId
-            where v.isPrivate = false
+            where v.isPrivate = false and v.isOldChannel = false
             ORDER BY FUNCTION('RANDOM')
             LIMIT :limit
             """)
@@ -112,7 +112,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             WHERE (:search IS NULL OR :search = '')
                OR (p.playlistId LIKE CONCAT('%', :search, '%')
                    OR v.title LIKE CONCAT('%', :search, '%'))
-            and v.isPrivate = false
+            and v.isPrivate = false and v.isOldChannel = false
             ORDER BY FUNCTION('RANDOM')
             LIMIT :limit
             """)
@@ -130,7 +130,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
             )
             FROM Video v
             JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            where v.isPrivate = false
+            where v.isPrivate = false and v.isOldChannel = false
             order by v.publishedAt DESC
             """)
     List<VideoResponse> findAllOrderByPublishedAt();
@@ -149,7 +149,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
         FROM Video v
         WHERE ((:search IS NULL OR :search = '')
                OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
-          AND v.isPrivate = false and v.isShort = :isShort
+          AND v.isPrivate = false and v.isShort = :isShort and v.isOldChannel = false
         ORDER BY v.publishedAt DESC
         """,
             countQuery = """
@@ -157,7 +157,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
                     FROM Video v
                     WHERE ((:search IS NULL OR :search = '')
                            OR LOWER(v.title) LIKE LOWER(CONCAT('%', :search, '%')))
-                      AND v.isPrivate = false  and v.isShort = :isShort
+                      AND v.isPrivate = false  and v.isShort = :isShort and v.isOldChannel = false
                     """)
     Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search, Boolean isShort);
 
@@ -165,6 +165,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     @Query(value = """
             SELECT v.video_id, v.published_at, v.thumbnail, v.title, NULL, v.description  
                         FROM video v  
+                                    where v.isOldChannel = false
                         ORDER BY v.published_at DESC  
                         LIMIT 1 
             """, nativeQuery = true)
@@ -172,7 +173,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
 
 
     @Query(value = """
-             select count(v) from videos v where v.is_private = false
+             select count(v) from videos v where v.is_private = false and v.isOldChannel = false
             """, nativeQuery = true)
     long countActiveVideos();
 }
