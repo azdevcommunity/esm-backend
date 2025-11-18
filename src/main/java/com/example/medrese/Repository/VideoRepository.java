@@ -162,18 +162,20 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
     Page<VideoResponse> findAllPagingOrderByPublishedAt(Pageable pageable, String search, Boolean isShort);
 
 
-    @Query(value = """
-            SELECT v.video_id, v.published_at, v.thumbnail, v.title, NULL, v.description  
-                        FROM videos v  
-                                    where v.isOldChannel = false
-                        ORDER BY v.published_at DESC  
-                        LIMIT 1 
-            """, nativeQuery = true)
+    @Query("""
+        SELECT new com.example.medrese.DTO.Response.VideoResponse(
+            v.videoId, v.publishedAt, v.thumbnail, v.title, null, v.description
+        )
+        FROM Video v
+        WHERE v.isOldChannel = false
+        ORDER BY v.publishedAt DESC
+        LIMIT 1
+        """)
     VideoResponse findLatestVideo();
 
 
     @Query(value = """
-             select count(v) from videos v where v.is_private = false and v.isOldChannel = false
+             select count(v) from videos v where v.is_private = false and v.is_old_channel = false
             """, nativeQuery = true)
     long countActiveVideos();
 }

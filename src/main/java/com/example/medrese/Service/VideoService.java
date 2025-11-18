@@ -462,9 +462,8 @@ public class VideoService {
     }
 
     public VideoStatisticsResponse getVideoStatistics() {
-        // ChannelStat'dan en son verileri al
         ChannelStat channelStat = channelStatRepository.findLatestChannelStat()
-                .orElse(new ChannelStat()); // Eğer veri yoksa boş nesne döndür
+                .orElse(new ChannelStat());
         
         long videoCount = videoRepository.countActiveVideos();
         long viewCount = channelStat.getViewCount() != null ? channelStat.getViewCount() : 0L;

@@ -17,8 +17,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-
 @Service
 @RequiredArgsConstructor
 public class AuthorService {
@@ -29,7 +27,7 @@ public class AuthorService {
     private final FileService fileService;
     private final ArticleRepository articleRepository;
 
-    @Value("folder_root")
+    @Value("folder-root")
     String folderRoot;
 
     public List<AuthorResponse> getAllAuthors() {
