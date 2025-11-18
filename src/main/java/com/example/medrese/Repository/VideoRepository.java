@@ -164,7 +164,7 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
 
     @Query(value = """
             SELECT v.video_id, v.published_at, v.thumbnail, v.title, NULL, v.description  
-                        FROM video v  
+                        FROM videos v  
                                     where v.isOldChannel = false
                         ORDER BY v.published_at DESC  
                         LIMIT 1 
