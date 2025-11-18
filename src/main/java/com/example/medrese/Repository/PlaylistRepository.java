@@ -27,6 +27,8 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
             JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
             JOIN Video v ON pv.videoId = v.videoId
             WHERE v.publishedAt IS NOT NULL and v.isPrivate = false
+                         and v.isOldChannel = false
+                                    and p.isOldChannel = false
             GROUP BY p
             HAVING COUNT(v) > 0
             ORDER BY MAX(v.publishedAt) DESC
@@ -41,6 +43,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
                 FROM Playlist p
                 JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
                 WHERE pv.videoId = :videoId
+                                    and p.isOldChannel = false
             """)
     List<Playlist> getAllByVideoId(@Param("videoId") String videoId);
 
@@ -52,6 +55,8 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
             JOIN Video v ON pv.videoId = v.videoId
             WHERE v.publishedAt IS NOT NULL and v.isPrivate = false
                           AND (:search IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :search, '%')))
+                                       and v.isOldChannel = false 
+                                    and p.isOldChannel = false
             GROUP BY p
             HAVING COUNT(v) > 0
             ORDER BY MAX(v.publishedAt) DESC
@@ -64,6 +69,8 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
             JOIN PlaylistVideo pv ON p.playlistId = pv.playlistId
             JOIN Video v ON pv.videoId = v.videoId
             WHERE v.publishedAt IS NOT NULL and v.isPrivate = false
+                        and v.isOldChannel = false 
+                                    and p.isOldChannel = false
             """)
     long countActivePlaylist();
 }
