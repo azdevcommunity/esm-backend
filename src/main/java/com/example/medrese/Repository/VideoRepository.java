@@ -98,25 +98,26 @@ public interface VideoRepository extends JpaRepository<Video, Integer> {
 //    );
 
     @Query("""
-            SELECT new com.example.medrese.DTO.Response.VideoResponse(
-                v.videoId,
-                v.publishedAt,
-                v.thumbnail,
-                v.title,
-                p.playlistId,
-                v.description
-            )
-            FROM Video v
-            LEFT JOIN PlaylistVideo pv ON v.videoId = pv.videoId
-            LEFT JOIN Playlist p ON pv.playlistId = p.playlistId
-            WHERE (:search IS NULL OR :search = '')
-               OR (p.playlistId LIKE CONCAT('%', :search, '%')
-                   OR v.title LIKE CONCAT('%', :search, '%'))
-            and v.isPrivate = false and v.isOldChannel = false
-            ORDER BY FUNCTION('RANDOM')
-            LIMIT :limit
-            """)
+        SELECT new com.example.medrese.DTO.Response.VideoResponse(
+            v.videoId,
+            v.publishedAt,
+            v.thumbnail,
+            v.title,
+            p.playlistId,
+            v.description
+        )
+        FROM Video v
+        LEFT JOIN PlaylistVideo pv ON v.videoId = pv.videoId
+        LEFT JOIN Playlist p ON pv.playlistId = p.playlistId
+        WHERE (:search IS NULL OR :search = '')
+           OR (p.playlistId ILIKE CONCAT('%', :search, '%')
+               OR v.title ILIKE CONCAT('%', :search, '%'))
+        and v.isPrivate = false and v.isOldChannel = false
+        ORDER BY FUNCTION('RANDOM')
+        LIMIT :limit
+        """)
     List<VideoResponse> searchVideos(@Param("search") String search, @Param("limit") int limit);
+
 
 
     @Query("""
