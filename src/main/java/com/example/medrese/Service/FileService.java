@@ -14,10 +14,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,16 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FileService {
 
-    private final Cloudinary cloudinary;
-
-    @Value("folder-root")
-    String folderRoot;
-
-    public String uploadFile(String base64File) {
-        return uploadFile(base64File, folderRoot + "/esm");
-    }
+    Cloudinary cloudinary;
 
     public String uploadFile(String base64File, String folder) {
         if (ObjectUtils.isEmpty(base64File)) {
@@ -49,7 +44,7 @@ public class FileService {
             Map optios = com.cloudinary.utils.ObjectUtils.asMap(
                     "public_id", fileName,
                     "resource_type", "image",
-                    "asset_folder", folderRoot + "/" + folder
+                    "asset_folder", folder
             );
 
             Map<String, Object> response = cloudinary.uploader().upload(file, optios);
@@ -89,7 +84,7 @@ public class FileService {
                             }).toList(),
                     com.cloudinary.utils.ObjectUtils.asMap("type", "upload",
                             "resource_type", "image",
-                            "asset_folder", folderRoot + "/" + folder
+                            "asset_folder", folder
                     ));
             log.info(apiResponse);
         } catch (Exception exception) {

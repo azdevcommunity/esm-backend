@@ -1,11 +1,8 @@
 package com.example.medrese.Service;
 
 
-import com.example.medrese.DTO.Request.Create.CreateAuthorDTO;
 import com.example.medrese.DTO.Request.Create.CreateBookDTO;
-import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.DTO.Response.BookResponse;
-import com.example.medrese.Model.Author;
 import com.example.medrese.Model.AuthorBook;
 import com.example.medrese.Model.Book;
 import com.example.medrese.Repository.AuthorBookRepository;
@@ -13,30 +10,26 @@ import com.example.medrese.Repository.AuthorRepository;
 import com.example.medrese.Repository.BookCategoryRepository;
 import com.example.medrese.Repository.BookRepository;
 import com.example.medrese.mapper.BookMapper;
-import lombok.AccessLevel;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-
 public class BookService {
 
-    BookRepository bookRepository;
-    BookMapper bookMapper;
-    AuthorRepository authorRepository;
-    AuthorBookRepository authorBookRepository;
-    BookCategoryRepository bookCategoryRepository;
-    FileService fileService;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
+    private final AuthorRepository authorRepository;
+    private final AuthorBookRepository authorBookRepository;
+    private final BookCategoryRepository bookCategoryRepository;
+    private final FileService fileService;
+
+    @Value("folder_root")
+    String folderRoot;
 
     public List<BookResponse> getAllBooks() {
         return bookRepository.findAllWithAuthor();
@@ -53,7 +46,7 @@ public class BookService {
             throw new RuntimeException("Author not exists");
         }
 
-        String image = fileService.uploadFile(createBookDTO.getImage(),"esm/books");
+        String image = fileService.uploadFile(createBookDTO.getImage(),folderRoot +"/books");
         createBookDTO.setImage(image);
 
         Book book = bookMapper.toEntity(createBookDTO);
@@ -75,8 +68,8 @@ public class BookService {
 
 
         if (fileService.isBase64(bookDetails.getImage())) {
-            fileService.deleteFile(book.getImage(),"esm/books");
-            String image = fileService.uploadFile(bookDetails.getImage(), "esm/books");
+            fileService.deleteFile(book.getImage(), folderRoot + "/books");
+            String image = fileService.uploadFile(bookDetails.getImage(), folderRoot + "/books");
             book.setImage(image);
         }
 
@@ -101,7 +94,7 @@ public class BookService {
 
         bookRepository.delete(book);
 
-        fileService.deleteFile(book.getImage(),"esm/books");
+        fileService.deleteFile(book.getImage(), folderRoot + "/books");
 
     }
 }

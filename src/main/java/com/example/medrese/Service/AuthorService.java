@@ -5,19 +5,17 @@ import com.example.medrese.DTO.Request.Create.CreateAuthorDTO;
 import com.example.medrese.DTO.Request.Update.UpdateAuthor;
 import com.example.medrese.DTO.Response.AuthorResponse;
 import com.example.medrese.Model.Author;
-//import com.example.medrese.Repository.AuthorArticleRepository;
 import com.example.medrese.Repository.ArticleRepository;
 import com.example.medrese.Repository.AuthorBookRepository;
 import com.example.medrese.Repository.AuthorRepository;
 import com.example.medrese.mapper.AuthorMapper;
+import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 
@@ -30,6 +28,9 @@ public class AuthorService {
 //    private final AuthorArticleRepository authorArticleRepository;
     private final FileService fileService;
     private final ArticleRepository articleRepository;
+
+    @Value("folder_root")
+    String folderRoot;
 
     public List<AuthorResponse> getAllAuthors() {
         return authorRepository.findAll().stream()
@@ -49,7 +50,7 @@ public class AuthorService {
         }
 
 
-        String image = fileService.uploadFile(createAuthorDTO.getImage(), "esm/authors");
+        String image = fileService.uploadFile(createAuthorDTO.getImage(), folderRoot + "/authors");
         createAuthorDTO.setImage(image);
 
         Author author = authorMapper.toEntity(createAuthorDTO);
@@ -67,8 +68,8 @@ public class AuthorService {
         }
 
         if (fileService.isBase64(authorDetails.getImage())) {
-            fileService.deleteFile(author.getImage(),"esm/authors");
-            String image = fileService.uploadFile(authorDetails.getImage(),"esm/authors");
+            fileService.deleteFile(author.getImage(), folderRoot + "/authors");
+            String image = fileService.uploadFile(authorDetails.getImage(), folderRoot + "/authors");
             author.setImage(image);
         }
 
@@ -94,7 +95,7 @@ public class AuthorService {
 
         authorRepository.deleteById(id);
 
-        fileService.deleteFile(author.getImage(),"esm/authors");
+        fileService.deleteFile(author.getImage(), folderRoot + "/authors");
     }
 
 

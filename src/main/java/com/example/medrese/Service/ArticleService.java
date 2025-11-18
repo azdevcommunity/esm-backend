@@ -20,9 +20,8 @@ import com.example.medrese.mapper.ArticleMapper;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,17 +29,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 @Service
-@AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class ArticleService {
 
-    ArticleRepository articleRepository;
-    ArticleMapper articleMapper;
-    CategoryRepository categoryRepository;
-    ArticleCategoryRepository articleCategoryRepository;
-    AuthorRepository authorRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticleMapper articleMapper;
+    private final CategoryRepository categoryRepository;
+    private final ArticleCategoryRepository articleCategoryRepository;
+    private final AuthorRepository authorRepository;
     //    AuthorArticleRepository authorArticleRepository;
-    FileService fileService;
+    private final FileService fileService;
+
+    @Value("folder-root")
+    String folderRoot;
 
     public Page<ArticleProjection2> getAllArticles(Pageable pageable, List<Long> categoryIds) {
         if (ObjectUtils.isEmpty(categoryIds)) {
@@ -85,7 +86,7 @@ public class ArticleService {
         Article article = articleMapper.toEntity(createArticleDTO);
 
         if (fileService.isBase64(createArticleDTO.getImage())) {
-            article.setImage(fileService.uploadFile(createArticleDTO.getImage(), "esm/articles"));
+            article.setImage(fileService.uploadFile(createArticleDTO.getImage(),  folderRoot + "/articles"));
         }
 
         article = articleRepository.save(article);
@@ -124,8 +125,8 @@ public class ArticleService {
         }
 
         if (fileService.isBase64(articleDetails.getImage())) {
-            fileService.deleteFile(article.getImage(),"esm/articles");
-            String image = fileService.uploadFile(articleDetails.getImage(),"esm/articles");
+            fileService.deleteFile(article.getImage(), folderRoot + "/articles");
+            String image = fileService.uploadFile(articleDetails.getImage(), folderRoot + "/articles");
             article.setImage(image);
         }
 
@@ -179,7 +180,7 @@ public class ArticleService {
 
         articleRepository.delete(article);
 
-        fileService.deleteFile(article.getImage(), "esm/articles");
+        fileService.deleteFile(article.getImage(), folderRoot + "/articles");
 
     }
 
